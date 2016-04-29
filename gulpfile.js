@@ -25,7 +25,6 @@ gulp.task('react', function(){
     .pipe(gulp.dest('./public/js')); // place to send uglified regular js files
 });
 
-// Watch for changes = first variable and run defined tasks = second variable
 gulp.task('watch', function() {
   gulp.watch(['./public/jsx/app.js'], ['react']); // place to watch for react changes
   gulp.watch(['./public/less/**/*.less'], ['less']);

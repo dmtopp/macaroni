@@ -21,7 +21,6 @@ app.get('/', function(req, res, next) {
   res.sendFile(__dirname + '/views/index.html');
 })
 
-
 // start the server
 // ----------------
 var server = app.listen(3000, function(){
