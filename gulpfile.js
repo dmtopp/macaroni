@@ -21,13 +21,13 @@ gulp.task('react', function(){
     }))
     .pipe(buffer())
     .pipe(concat('./production-app.js'))
-    .pipe(uglify())
+    // .pipe(uglify())
     .pipe(gulp.dest('./public/js')); // place to send uglified regular js files
 });
 
 gulp.task('watch', function() {
   gulp.watch(['./public/jsx/app.js'], ['react']); // place to watch for react changes
-  gulp.watch(['./public/less/**/*.less'], ['less']);
+  // gulp.watch(['./public/less/**/*.less'], ['less']);
 });
 
 gulp.task('default', ['react', 'less']);

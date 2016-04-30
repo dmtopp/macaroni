@@ -1,0 +1,29 @@
+button {
+  background-color: black !important; }
+
+.slick-prev {
+  margin-left: 30px; }
+
+.slick-next {
+  margin-right: 30px; }
+
+.soundPad {
+  width: 200px;
+  height: 200px;
+  background-color: #ffba1c;
+  display: inline-block; }
+
+.soundPad:active {
+  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,ffc942+73 */
+  background: white;
+  /* Old browsers */
+  background: -moz-radial-gradient(center, ellipse cover, white 0%, #ffba1c 73%);
+  /* FF3.6-15 */
+  background: -webkit-radial-gradient(center, ellipse cover, white 0%, #ffba1c 73%);
+  /* Chrome10-25,Safari5.1-6 */
+  background: radial-gradient(ellipse at center, white 0%, #ffba1c 73%);
+  /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ffc942',GradientType=1 );
+  /* IE6-9 fallback on horizontal gradient */ }
+
+/*# sourceMappingURL=slider.css.map */
