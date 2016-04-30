@@ -19371,7 +19371,7 @@ var Keyboard = React.createClass({
   displayName: 'Keyboard',
 
   getInitialState: function getInitialState() {
-    var notesInOrder = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'];
+    var notesInOrder = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
     var keys = ['a', 'w', 's', 'e', 'd', 'f', 't', 'g', 'y', 'h', 'u', 'j', 'k', 'o', 'l', 'p', ';', '\''];
     return {
       keys: keys,
@@ -19385,24 +19385,22 @@ var Keyboard = React.createClass({
         noteOctave,
         note,
         className,
-        key_number,
+        keyNumber,
         frequency;
 
     var keys = this.state.keys.map(function (key, i) {
 
       // adjust our octave if we are past the first 12 notes
-      noteOctave = i > 11 ? String(octave + 1) : String(octave), note = notesInOrder[i % 12 + 3] + noteOctave, console.log(note);
+      noteOctave = i > 11 ? String(octave + 1) : String(octave), note = notesInOrder[i % 12] + noteOctave,
       // notes that have a # on them are black keys!
       className = note.length === 3 ? 'blackKey' : 'whiteKey';
 
-      if (i < 3) {
-        key_number = i + 12 + (octave - 1) * 12 + 1;
-      } else {
-        key_number = i + (octave - 1) * 12 + 1;
-      }
+      // key number is the midi note number for our note
+      // currently there are no connection features in this project
+      // but it gives us a nice way to find the frequency
+      keyNumber = i + octave * 12 + 12;
 
-      frequency = 440 * Math.pow(2, (key_number - 49) / 12);
-      // console.log(key_number, frequency);
+      frequency = 440 * Math.pow(2, (keyNumber - 69) / 12);
 
       // myKey = alphanumeric keyboard key to map to the musical keyboard key
       // key = index for react to use so it doesn't freak out
@@ -19410,7 +19408,7 @@ var Keyboard = React.createClass({
         myKey: key,
         key: i,
         className: className,
-        frequency: frequency });
+        keyNumber: keyNumber });
     });
 
     return React.createElement(
@@ -19427,27 +19425,22 @@ var Key = React.createClass({
 
   getInitialState: function getInitialState() {
     return {
-      // use sample data for now
-      // later these will be passed from the parent
-      note: this.props.note,
-      myKey: this.props.myKey,
-      className: this.props.className,
-      frequency: this.props.frequency
+      frequency: 440 * Math.pow(2, (this.props.keyNumber - 69) / 12)
     };
   },
   componentDidMount: function componentDidMount() {
-    var note = this.state.note;
-    var myKey = this.state.myKey;
+    var note = this.props.note;
+    var myKey = this.props.myKey;
     var frequency = this.state.frequency;
     key(myKey, function () {
-      console.log('You pressed ' + frequency + ' HZ!');
+      console.log(note + ' is ' + frequency + ' HZ!');
     });
   },
   clickHandler: function clickHandler() {
-    console.log('You clicked on ' + this.state.frequency + 'HZ!');
+    console.log(this.props.note + ' is ' + this.props.frequency + ' HZ!');
   },
   render: function render() {
-    return React.createElement('div', { className: this.state.className, onClick: this.clickHandler });
+    return React.createElement('div', { className: this.props.className, onClick: this.clickHandler });
   }
 });
 
