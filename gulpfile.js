@@ -9,13 +9,13 @@ var gulp        = require('gulp'),
 
 // Transpile LESS to CSS
 gulp.task('less', function() {
-  return gulp.src('./public/less/style.less')
+  return gulp.src('./public/styles/less/style.less')
     .pipe(less())
-    .pipe(gulp.dest('./public/css'));
+    .pipe(gulp.dest('./public/styles/css'));
 });
 
 gulp.task('react', function(){
-  return gulp.src('./public/jsx/app.js') // place to read react files from
+  return gulp.src('./public/jsx/keyboard.jsx') // place to read react files from
     .pipe(tap(function(file) {
       file.contents = browserify(file.path).transform('babelify', {presets: ['es2015', 'react']}).bundle()
     }))
@@ -26,7 +26,7 @@ gulp.task('react', function(){
 });
 
 gulp.task('watch', function() {
-  gulp.watch(['./public/jsx/app.js'], ['react']); // place to watch for react changes
+  gulp.watch(['./public/jsx/keyboard.js'], ['react']); // place to watch for react changes
   // gulp.watch(['./public/less/**/*.less'], ['less']);
 });
 

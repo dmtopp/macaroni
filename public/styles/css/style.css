@@ -1,0 +1,17 @@
+.whiteKey {
+  height: 250px;
+  width: 40px;
+  border: 3px solid black;
+  border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+  display: inline-block;
+}
+.blackKey {
+  height: 150px;
+  width: 25px;
+  border: 3px solid black;
+  border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+  display: inline-block;
+  background-color: black;
+}
