@@ -14,4 +14,25 @@
   border-bottom-left-radius: 10px;
   display: inline-block;
   background-color: black;
+  color: white;
+}
+.pressed {
+  background-color: grey;
+}
+.keyboardContainer {
+  width: 750px;
+}
+.instrument-enter {
+  opacity: 0.01;
+}
+.instrument-enter.instrument-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+.instrument-leave {
+  opacity: 1;
+}
+.instrument-leave.instrument-leave-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
 }
