@@ -1,6 +1,6 @@
 .whiteKey {
   height: 250px;
-  width: 40px;
+  width: 45px;
   border: 3px solid black;
   border-bottom-right-radius: 10px;
   border-bottom-left-radius: 10px;
@@ -8,13 +8,15 @@
 }
 .blackKey {
   height: 150px;
-  width: 25px;
+  width: 30px;
   border: 3px solid black;
   border-bottom-right-radius: 10px;
   border-bottom-left-radius: 10px;
   display: inline-block;
   background-color: black;
   color: white;
+  position: absolute;
+  margin-left: -18px;
 }
 .pressed {
   background-color: grey;
@@ -35,4 +37,24 @@
 .instrument-leave.instrument-leave-active {
   opacity: 0.01;
   transition: opacity 300ms ease-in;
+}
+.drumPad {
+  width: 120px;
+  height: 120px;
+  border: 3px solid black;
+  border-radius: 15px;
+}
+.loop-toggle {
+  width: 100px;
+  height: 20px;
+  border: 3px solid black;
+  border-radius: 10px;
+  margin: 3px auto;
+}
+.pad-container {
+  display: inline-block;
+  margin: 0 15px;
+}
+.drum-machine-container {
+  width: 630px;
 }

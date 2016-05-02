@@ -20198,6 +20198,120 @@ var React = require('react'),
     ReactDOM = require('react-dom'),
     ReactTransition = require('react-addons-css-transition-group');
 
+/* 'Global' container component
+* =============================================================================
+* The all-seeing, all-knowing parent component.  Contains information about
+*   which child components to display.  Is also responsible for sending
+*   socket.io messages to the server and playing the sounds triggered by
+*   instruments.
+* ============================================================================= */
+var Container = React.createClass({
+  displayName: 'Container',
+
+  getInitialState: function getInitialState() {
+    return {
+      sockets: io.connect(),
+      context: new AudioContext(),
+      oscillators: {},
+      keyboardData: {
+        osc1: 'square',
+        osc2: 'triangle',
+        attack: 0.001,
+        release: 0.5,
+        filterType: 'lowpass',
+        filterCutoff: 2000,
+        osc1Detune: -5,
+        osc2Detune: 5
+      }
+    };
+  },
+  componentDidMount: function componentDidMount() {
+    var sockets = this.state.sockets,
+        keyboardData = this.state.keyboardData;
+    sockets.on('keyboardDown', function (keyboardData) {
+      console.log('key down');
+      console.log(keyboardData);
+      // console.log(keyboardData.frequency);
+      // playNote(keyboardData.data, keyboardData.frequency);
+    });
+
+    sockets.on('keyboardUp', function (keyboardData) {
+      console.log('key up');
+      console.log(keyboardData);
+      // release = keyboardData.data.release;
+      // frequency = keyboardData.frequency;
+      // oscillators[frequency].volume.gain.setTargetAtTime(0, context.currentTime, release);
+    });
+  },
+  playNote: function playNote(data, frequency) {
+    var state = this.state;
+    var context = this.state.context;
+    var osc = context.createOscillator();
+    var osc2 = context.createOscillator();
+    var oscVolume = context.createGain();
+    var filter = context.createBiquadFilter();
+
+    osc.start(context.currentTime);
+    osc2.start(context.currentTime);
+
+    osc.type = data.osc1;
+    osc2.type = data.osc2;
+
+    // set gain for both oscillators
+    // start gain at 0 and then ramp up over attack time
+    oscVolume.gain.value = 0;
+    oscVolume.gain.setTargetAtTime(1, context.currentTime, data.attack);
+
+    osc.frequency.value = frequency;
+    osc2.frequency.value = frequency;
+    osc.detune.value = data.osc1Detune;
+    osc2.detune.value = data.osc2Detune;
+
+    filter.type = data.filterType;
+    filter.frequency.value = data.filterCutoff;
+
+    // (osc, osc2) -> oscVolume -> master out
+    osc.connect(oscVolume);
+    osc2.connect(oscVolume);
+    oscVolume.connect(filter);
+    filter.connect(masterVolume);
+
+    // keep track of our oscillators and volume in state
+    oscObject = {
+      voices: [osc],
+      volume: oscVolume
+    };
+
+    state.oscillators[frequency] = oscObject;
+    this.setState(state);
+  },
+  keyboardDown: function keyboardDown(frequency) {
+    var oscSocketData = {
+      data: this.state.keyboardData,
+      frequency: frequency
+    };
+    this.state.sockets.emit('keyboardDown', oscSocketData);
+  },
+  keyboardUp: function keyboardUp(frequency) {
+    oscSocketData = {
+      data: this.state.keyboardData,
+      frequency: frequency
+    };
+    sockets.emit('keyboardUp', oscSocketData);
+  },
+  render: function render() {
+    return React.createElement(InstrumentContainer, { keyboardDown: this.keyboardDown, keyboardUp: this.keyboardUp });
+  }
+});
+
+/* End container component
+* ============================================================================= */
+
+/* Instrument container component
+* =============================================================================
+* Instrument container is responsible for switching between the drum machine
+*   and keyboard components.
+* ============================================================================= */
 var InstrumentContainer = React.createClass({
   displayName: 'InstrumentContainer',
 
@@ -20218,7 +20332,8 @@ var InstrumentContainer = React.createClass({
       React.createElement(
         ReactTransition,
         { transitionName: 'instrument', transitionEnterTimeout: 500, transitionLeaveTimeout: 300 },
-        this.state.showKeyboard ? React.createElement(Keyboard, null) : null
+        this.state.showKeyboard ? React.createElement(Keyboard, { keyboardDown: this.props.keyboardDown,
+          keyboardUp: this.props.keyboardUp }) : React.createElement(DrumMachine, null)
       ),
       React.createElement(
         'button',
@@ -20229,6 +20344,12 @@ var InstrumentContainer = React.createClass({
   }
 });
 
+/* End Drum container and drum pad components
+* ============================================================================= */
+
+/* Keyboard and key components
+ * =============================================================================
+ * ============================================================================= */
 var Keyboard = React.createClass({
   displayName: 'Keyboard',
 
@@ -20267,7 +20388,9 @@ var Keyboard = React.createClass({
         myLetter: key[0],
         key: i,
         className: className,
-        keyNumber: keyNumber });
+        keyNumber: keyNumber,
+        keyboardDown: this.props.keyboardDown,
+        keyboardUp: this.props.keyboardUp });
     });
 
     return React.createElement(
@@ -20386,21 +20509,21 @@ var Key = React.createClass({
     };
   },
   keydown: function keydown(e) {
-    var myKey = this.props.myKey;
-    // var self = this;
-    if (e.keyCode === myKey) {
+    if (e.keyCode === this.props.myKey) {
       var state = this.state;
       state.className = state.className + ' pressed';
       this.setState(state);
+
+      this.props.keyboardDown(this.state.frequency);
     }
   },
   keyup: function keyup(e) {
-    var myKey = this.props.myKey;
-    // var self = this;
-    if (e.keyCode === myKey) {
+    if (e.keyCode === this.props.myKey) {
       var state = this.state;
       state.className = state.className.split(' ')[0];
       this.setState(state);
+
+      this.props.keyboardUp(this.state.frequency);
     }
   },
   componentDidMount: function componentDidMount() {
@@ -20416,16 +20539,10 @@ var Key = React.createClass({
     document.removeEventListener('keyup', this.keyup);
   },
   mouseDown: function mouseDown() {
-    // var state = this.state;
-    // state.className = state.className + ' pressed';
-    // this.setState(state);
-    // console.log(this.props.note + ' down!');
+    // these functions are left here so mouse input functionality can be added later
   },
   mouseUp: function mouseUp() {
-    // var state = this.state;
-    // state.className = state.className.split(' ')[0];
-    // this.setState(state);
-    // console.log(this.props.note + ' up!');
+    // these functions are left here so mouse input functionality can be added later
   },
   render: function render() {
     return React.createElement(
@@ -20436,6 +20553,104 @@ var Key = React.createClass({
   }
 });
 
-ReactDOM.render(React.createElement(InstrumentContainer, null), document.querySelector('#react-container'));
+/* End keyboard and key components
+* ============================================================================= */
+
+/* Drum Machine and Drum Pad components
+* =============================================================================
+* Drum Machine component is responsible for handling the data associated with
+*   each individual drum pad.
+* Drum Pad components contain a div that serves as a visual representaion of
+*   when a pad is pressed as well as a clickable button to loop each drum sound.
+*   Each drum pad adds an event listener to the DOM when it mounts to listen for
+*   its associated key, and calls a function belonging to the 'global' parent
+*   component to trigger the acutal sound.
+* ============================================================================= */
+
+var DrumMachine = React.createClass({
+  displayName: 'DrumMachine',
+
+  getInitialState: function getInitialState() {
+    var keyCodes = [['a', 65], ['s', 83], ['d', 68], ['f', 70], ['j', 74], ['k', 75], ['l', 76], [';', 186]];
+    return {
+      keyCodes: keyCodes
+    };
+  },
+  render: function render() {
+    var pads = this.state.keyCodes.map(function (key, i) {
+      return React.createElement(DrumPad, { myLetter: key[0], myKey: key[1], key: i });
+    });
+    return React.createElement(
+      'div',
+      { className: 'drum-machine-container' },
+      pads
+    );
+  }
+});
+
+var DrumPad = React.createClass({
+  displayName: 'DrumPad',
+
+  getInitialState: function getInitialState() {
+    return {
+      className: 'drumPad',
+      loop: false
+    };
+  },
+  componentDidMount: function componentDidMount() {
+    var myKey = this.props.myKey;
+    // each key listents for its own keycode to be pressed
+    document.addEventListener('keydown', this.keydown);
+    document.addEventListener('keyup', this.keyup);
+  },
+  componentWillUnmount: function componentWillUnmount() {
+    document.removeEventListener('keydown', this.keydown);
+    document.removeEventListener('keyup', this.keyup);
+  },
+  keydown: function keydown(e) {
+    if (e.keyCode === this.props.myKey) {
+      var state = this.state;
+      state.className = state.className + ' pressed';
+      this.setState(state);
+    }
+  },
+  keyup: function keyup(e) {
+    if (e.keyCode === this.props.myKey) {
+      var state = this.state;
+      state.className = state.className.split(' ')[0];
+      this.setState(state);
+    }
+  },
+  loopToggle: function loopToggle() {
+    var state = this.state;
+    state.loop = !this.state.loop;
+    this.setState(state);
+  },
+  render: function render() {
+    return React.createElement(
+      'div',
+      { className: 'pad-container' },
+      React.createElement(
+        'div',
+        { className: this.state.className },
+        this.props.myLetter.toUpperCase()
+      ),
+      this.state.loop ? React.createElement(
+        'div',
+        { className: 'loop-toggle pressed', onClick: this.loopToggle },
+        'Loop'
+      ) : React.createElement(
+        'div',
+        { className: 'loop-toggle', onClick: this.loopToggle },
+        'Loop'
+      )
+    );
+  }
+});
+
+/* End Drum container and drum pad components
+* ============================================================================= */
+
+ReactDOM.render(React.createElement(Container, null), document.querySelector('#react-container'));
 
 },{"react":174,"react-addons-css-transition-group":30,"react-dom":31}]},{},[175]);
