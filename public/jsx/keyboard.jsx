@@ -8,8 +8,7 @@ var React           = require('react'),
 * =============================================================================
 * The all-seeing, all-knowing parent component.  Contains information about
 *   which child components to display.  Is also responsible for sending
-*   socket.io messages to the server and playing the sounds triggered by
-*   instruments.
+*   socket.io messages to the server and all audio generation.
 * ============================================================================= */
 var Container = React.createClass({
   getInitialState: function() {
@@ -52,7 +51,34 @@ var Container = React.createClass({
       self.state.oscillators[frequency].volume.gain.setTargetAtTime(0, context.currentTime, release);
     })
 
+  },
+  // handles the user's changing of keyboard parameters
+  keyParamsHandler: function(e) {
+    // console.log(e.target);
+    var name = e.target.name;
+    var value = e.target.value;
+    var state = this.state;
 
+    switch (name) {
+      case 'attack':
+      case 'release':
+        state.keyboardData[name] = (value / 100) * 2 + 0.001;
+        break;
+      case 'filterCutoff':
+        state.keyboardData[name] = (value / 100) * 20000;
+        break;
+      case 'osc1Detune':
+      case 'osc2Detune':
+        state.keyboardData[name] = (value / 100) * 100;
+        break;
+      case 'filterType':
+      case 'osc1':
+      case 'osc2':
+        state.keyboardData[name] = value;
+        break;
+    }
+
+    this.setState(state);
   },
   playNote: function(data, frequency){
     var state = this.state;
@@ -112,11 +138,11 @@ var Container = React.createClass({
     this.state.sockets.emit('keyboardUp', oscSocketData);
   },
   render: function() {
-    return <InstrumentContainer keyboardDown={ this.keyboardDown } keyboardUp={ this.keyboardUp } />
+    return <InstrumentContainer keyboardDown={ this.keyboardDown }
+                                keyboardUp={ this.keyboardUp }
+                                keyParamsHandler={ this.keyParamsHandler } />
   }
 })
-
-
 /* End container component
 * ============================================================================= */
 
@@ -141,7 +167,8 @@ var InstrumentContainer = React.createClass({
       <div className="instrument-container">
         <ReactTransition transitionName="instrument" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
           { this.state.showKeyboard ? <Keyboard keyboardDown={ this.props.keyboardDown }
-                                                keyboardUp={ this.props.keyboardUp } />
+                                                keyboardUp={ this.props.keyboardUp }
+                                                keyParamsHandler={ this.props.keyParamsHandler } />
                                     : <DrumMachine /> }
         </ReactTransition>
         <button type="button" onClick={ this.switchInstruments }>{ this.state.showKeyboard ? 'Drums' : 'Keyboard' }</button>
@@ -150,7 +177,7 @@ var InstrumentContainer = React.createClass({
   }
 })
 
-/* End Drum container and drum pad components
+/* End instrument container component
 * ============================================================================= */
 
 /* Keyboard and key components
@@ -217,38 +244,60 @@ var Keyboard = React.createClass({
     })
 
     return (
+
+      // note to self:  see if ya can DRY this out, k?
       <div className='keyboardContainer'>
         { keys }
-        <select className="keyboardParams" name="osc1">
+        <select className="keyboardParams" name="osc1" onChange={ this.props.keyParamsHandler }>
           <option value="square">Square</option>
           <option value="sine">Sine</option>
           <option value="triangle">Triangle</option>
           <option value="sawtooth">Sawtooth</option>
         </select>
 
-        <select className="keyboardParams" name="osc2">
+        <select className="keyboardParams" name="osc2" onChange={ this.props.keyParamsHandler }>
           <option value="square">Square</option>
           <option value="sine">Sine</option>
           <option value="triangle">Triangle</option>
           <option value="sawtooth">Sawtooth</option>
         </select>
 
-        <select className="keyboardParams" name="filterType">
+        <select className="keyboardParams" name="filterType" onChange={ this.props.keyParamsHandler }>
           <option value="lowpass">Lowpass</option>
           <option value="highpass">Highpass</option>
           <option value="bandpass">Bandpass</option>
         </select>
 
         <small>Attack</small>
-        <input className="keyboardParams" type="range" name="attack" defaultValue="0" min="0" max="100" />
+        <input className="keyboardParams"
+               type="range"
+               onChange={ this.props.keyParamsHandler }
+               name="attack"
+               defaultValue="0" />
         <small>Release</small>
-        <input className="keyboardParams" type="range" name="release" defaultValue="0" min="0" max="100" />
+        <input className="keyboardParams"
+               type="range"
+               onChange={ this.props.keyParamsHandler }
+               name="release"
+               defaultValue="0" />
         <small>Cutoff</small>
-        <input className="keyboardParams" type="range" name="filterCutoff" defaultValue="50" min="0" max="100" />
+        <input className="keyboardParams"
+               type="range"
+               onChange={ this.props.keyParamsHandler }
+               name="filterCutoff"
+               defaultValue="50" />
         <small>Osc1Detune</small>
-        <input className="keyboardParams" type="range" name="osc1Detune" defaultValue="0" min="0" max="100" />
+        <input className="keyboardParams"
+               type="range"
+               onChange={ this.props.keyParamsHandler }
+               name="osc1Detune"
+               defaultValue="0" />
         <small>Osc2Detune</small>
-        <input className="keyboardParams" type="range" name="osc2Detune" defaultValue="0" min="0" max="100" />
+        <input className="keyboardParams"
+               type="range"
+               onChange={ this.props.keyParamsHandler }
+               name="osc2Detune"
+               defaultValue="0" />
       </div>
     )
   }

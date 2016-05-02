@@ -20248,9 +20248,35 @@ var Container = React.createClass({
       self.state.oscillators[frequency].volume.gain.setTargetAtTime(0, context.currentTime, release);
     });
   },
+  // handles the user's changing of keyboard parameters
+  keyParamsHandler: function keyParamsHandler(e) {
+    // console.log(e.target);
+    var name = e.target.name;
+    var value = e.target.value;
+    var state = this.state;
+
+    switch (name) {
+      case 'attack':
+      case 'release':
+        state.keyboardData[name] = value / 100 * 2 + 0.001;
+        break;
+      case 'filterCutoff':
+        state.keyboardData[name] = value / 100 * 20000;
+        break;
+      case 'osc1Detune':
+      case 'osc2Detune':
+        state.keyboardData[name] = value / 100 * 100;
+        break;
+      case 'filterType':
+      case 'osc1':
+      case 'osc2':
+        state.keyboardData[name] = value;
+        break;
+    }
+
+    this.setState(state);
+  },
   playNote: function playNote(data, frequency) {
-    console.log('play note function', frequency);
-    console.log(data);
     var state = this.state;
     var context = this.state.context;
     var osc = context.createOscillator();
@@ -20307,7 +20333,9 @@ var Container = React.createClass({
     this.state.sockets.emit('keyboardUp', oscSocketData);
   },
   render: function render() {
-    return React.createElement(InstrumentContainer, { keyboardDown: this.keyboardDown, keyboardUp: this.keyboardUp });
+    return React.createElement(InstrumentContainer, { keyboardDown: this.keyboardDown,
+      keyboardUp: this.keyboardUp,
+      keyParamsHandler: this.keyParamsHandler });
   }
 });
 
@@ -20340,7 +20368,8 @@ var InstrumentContainer = React.createClass({
         ReactTransition,
         { transitionName: 'instrument', transitionEnterTimeout: 500, transitionLeaveTimeout: 300 },
         this.state.showKeyboard ? React.createElement(Keyboard, { keyboardDown: this.props.keyboardDown,
-          keyboardUp: this.props.keyboardUp }) : React.createElement(DrumMachine, null)
+          keyboardUp: this.props.keyboardUp,
+          keyParamsHandler: this.props.keyParamsHandler }) : React.createElement(DrumMachine, null)
       ),
       React.createElement(
         'button',
@@ -20351,7 +20380,7 @@ var InstrumentContainer = React.createClass({
   }
 });
 
-/* End Drum container and drum pad components
+/* End instrument container component
 * ============================================================================= */
 
 /* Keyboard and key components
@@ -20401,107 +20430,131 @@ var Keyboard = React.createClass({
         keyboardUp: self.props.keyboardUp });
     });
 
-    return React.createElement(
-      'div',
-      { className: 'keyboardContainer' },
-      keys,
+    return(
+
+      // note to self:  see if ya can DRY this out, k?
       React.createElement(
-        'select',
-        { className: 'keyboardParams', name: 'osc1' },
+        'div',
+        { className: 'keyboardContainer' },
+        keys,
         React.createElement(
-          'option',
-          { value: 'square' },
-          'Square'
+          'select',
+          { className: 'keyboardParams', name: 'osc1', onChange: this.props.keyParamsHandler },
+          React.createElement(
+            'option',
+            { value: 'square' },
+            'Square'
+          ),
+          React.createElement(
+            'option',
+            { value: 'sine' },
+            'Sine'
+          ),
+          React.createElement(
+            'option',
+            { value: 'triangle' },
+            'Triangle'
+          ),
+          React.createElement(
+            'option',
+            { value: 'sawtooth' },
+            'Sawtooth'
+          )
         ),
         React.createElement(
-          'option',
-          { value: 'sine' },
-          'Sine'
+          'select',
+          { className: 'keyboardParams', name: 'osc2', onChange: this.props.keyParamsHandler },
+          React.createElement(
+            'option',
+            { value: 'square' },
+            'Square'
+          ),
+          React.createElement(
+            'option',
+            { value: 'sine' },
+            'Sine'
+          ),
+          React.createElement(
+            'option',
+            { value: 'triangle' },
+            'Triangle'
+          ),
+          React.createElement(
+            'option',
+            { value: 'sawtooth' },
+            'Sawtooth'
+          )
         ),
         React.createElement(
-          'option',
-          { value: 'triangle' },
-          'Triangle'
+          'select',
+          { className: 'keyboardParams', name: 'filterType', onChange: this.props.keyParamsHandler },
+          React.createElement(
+            'option',
+            { value: 'lowpass' },
+            'Lowpass'
+          ),
+          React.createElement(
+            'option',
+            { value: 'highpass' },
+            'Highpass'
+          ),
+          React.createElement(
+            'option',
+            { value: 'bandpass' },
+            'Bandpass'
+          )
         ),
         React.createElement(
-          'option',
-          { value: 'sawtooth' },
-          'Sawtooth'
-        )
-      ),
-      React.createElement(
-        'select',
-        { className: 'keyboardParams', name: 'osc2' },
-        React.createElement(
-          'option',
-          { value: 'square' },
-          'Square'
+          'small',
+          null,
+          'Attack'
         ),
+        React.createElement('input', { className: 'keyboardParams',
+          type: 'range',
+          onChange: this.props.keyParamsHandler,
+          name: 'attack',
+          defaultValue: '0' }),
         React.createElement(
-          'option',
-          { value: 'sine' },
-          'Sine'
+          'small',
+          null,
+          'Release'
         ),
+        React.createElement('input', { className: 'keyboardParams',
+          type: 'range',
+          onChange: this.props.keyParamsHandler,
+          name: 'release',
+          defaultValue: '0' }),
         React.createElement(
-          'option',
-          { value: 'triangle' },
-          'Triangle'
+          'small',
+          null,
+          'Cutoff'
         ),
+        React.createElement('input', { className: 'keyboardParams',
+          type: 'range',
+          onChange: this.props.keyParamsHandler,
+          name: 'filterCutoff',
+          defaultValue: '50' }),
         React.createElement(
-          'option',
-          { value: 'sawtooth' },
-          'Sawtooth'
-        )
-      ),
-      React.createElement(
-        'select',
-        { className: 'keyboardParams', name: 'filterType' },
-        React.createElement(
-          'option',
-          { value: 'lowpass' },
-          'Lowpass'
+          'small',
+          null,
+          'Osc1Detune'
         ),
+        React.createElement('input', { className: 'keyboardParams',
+          type: 'range',
+          onChange: this.props.keyParamsHandler,
+          name: 'osc1Detune',
+          defaultValue: '0' }),
         React.createElement(
-          'option',
-          { value: 'highpass' },
-          'Highpass'
+          'small',
+          null,
+          'Osc2Detune'
         ),
-        React.createElement(
-          'option',
-          { value: 'bandpass' },
-          'Bandpass'
-        )
-      ),
-      React.createElement(
-        'small',
-        null,
-        'Attack'
-      ),
-      React.createElement('input', { className: 'keyboardParams', type: 'range', name: 'attack', defaultValue: '0', min: '0', max: '100' }),
-      React.createElement(
-        'small',
-        null,
-        'Release'
-      ),
-      React.createElement('input', { className: 'keyboardParams', type: 'range', name: 'release', defaultValue: '0', min: '0', max: '100' }),
-      React.createElement(
-        'small',
-        null,
-        'Cutoff'
-      ),
-      React.createElement('input', { className: 'keyboardParams', type: 'range', name: 'filterCutoff', defaultValue: '50', min: '0', max: '100' }),
-      React.createElement(
-        'small',
-        null,
-        'Osc1Detune'
-      ),
-      React.createElement('input', { className: 'keyboardParams', type: 'range', name: 'osc1Detune', defaultValue: '0', min: '0', max: '100' }),
-      React.createElement(
-        'small',
-        null,
-        'Osc2Detune'
-      ),
-      React.createElement('input', { className: 'keyboardParams', type: 'range', name: 'osc2Detune', defaultValue: '0', min: '0', max: '100' })
+        React.createElement('input', { className: 'keyboardParams',
+          type: 'range',
+          onChange: this.props.keyParamsHandler,
+          name: 'osc2Detune',
+          defaultValue: '0' })
+      )
     );
   }
 
