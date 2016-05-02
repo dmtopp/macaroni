@@ -20646,131 +20646,53 @@ var Keyboard = React.createClass({
         keyboardUp: self.props.keyboardUp });
     });
 
-    return(
+    var sliderParamNames = [['attack', 'Attack'], ['release', 'Release'], ['filterCutoff', 'Filter Cutoff'], ['osc1Detune', 'Oscillator 1 Detune'], ['osc2Detune', 'Oscillator 2 Detune']];
 
-      // note to self:  see if ya can DRY this out, k?
+    var selectParamNames = [['osc1', 'Oscillator 1'], ['osc2', 'Oscillator 2'], ['filterType', 'Filter Type']];
+
+    var oscOptions = [['square', 'Square'], ['sine', 'Sine'], ['triangle', 'Triange'], ['sawtooth', 'Sawtooth']];
+
+    var selectOscOptions = oscOptions.map(function (option, i) {
+      return React.createElement(
+        'option',
+        { value: option[0], key: i },
+        option[1]
+      );
+    });
+
+    var paramSelectors = selectParamNames.map(function (paramName, i) {
+      return React.createElement(KeyParamSelector, { key: i, name: paramName[0], labelName: paramName[1], options: selectOscOptions });
+    });
+
+    var paramSliders = sliderParamNames.map(function (paramName, i) {
+      return React.createElement(KeyParamSlider, { key: i, name: paramName[0], labelName: paramName[1] });
+    });
+
+    return React.createElement(
+      'div',
+      { className: 'keyboardContainer' },
+      keys,
+      paramSelectors,
       React.createElement(
-        'div',
-        { className: 'keyboardContainer' },
-        keys,
+        'select',
+        { className: 'keyboardParams', name: 'filterType', onChange: this.props.keyParamsHandler },
         React.createElement(
-          'select',
-          { className: 'keyboardParams', name: 'osc1', onChange: this.props.keyParamsHandler },
-          React.createElement(
-            'option',
-            { value: 'square' },
-            'Square'
-          ),
-          React.createElement(
-            'option',
-            { value: 'sine' },
-            'Sine'
-          ),
-          React.createElement(
-            'option',
-            { value: 'triangle' },
-            'Triangle'
-          ),
-          React.createElement(
-            'option',
-            { value: 'sawtooth' },
-            'Sawtooth'
-          )
+          'option',
+          { value: 'lowpass' },
+          'Lowpass'
         ),
         React.createElement(
-          'select',
-          { className: 'keyboardParams', name: 'osc2', onChange: this.props.keyParamsHandler },
-          React.createElement(
-            'option',
-            { value: 'square' },
-            'Square'
-          ),
-          React.createElement(
-            'option',
-            { value: 'sine' },
-            'Sine'
-          ),
-          React.createElement(
-            'option',
-            { value: 'triangle' },
-            'Triangle'
-          ),
-          React.createElement(
-            'option',
-            { value: 'sawtooth' },
-            'Sawtooth'
-          )
+          'option',
+          { value: 'highpass' },
+          'Highpass'
         ),
         React.createElement(
-          'select',
-          { className: 'keyboardParams', name: 'filterType', onChange: this.props.keyParamsHandler },
-          React.createElement(
-            'option',
-            { value: 'lowpass' },
-            'Lowpass'
-          ),
-          React.createElement(
-            'option',
-            { value: 'highpass' },
-            'Highpass'
-          ),
-          React.createElement(
-            'option',
-            { value: 'bandpass' },
-            'Bandpass'
-          )
-        ),
-        React.createElement(
-          'small',
-          null,
-          'Attack'
-        ),
-        React.createElement('input', { className: 'keyboardParams',
-          type: 'range',
-          onChange: this.props.keyParamsHandler,
-          name: 'attack',
-          defaultValue: '0' }),
-        React.createElement(
-          'small',
-          null,
-          'Release'
-        ),
-        React.createElement('input', { className: 'keyboardParams',
-          type: 'range',
-          onChange: this.props.keyParamsHandler,
-          name: 'release',
-          defaultValue: '0' }),
-        React.createElement(
-          'small',
-          null,
-          'Cutoff'
-        ),
-        React.createElement('input', { className: 'keyboardParams',
-          type: 'range',
-          onChange: this.props.keyParamsHandler,
-          name: 'filterCutoff',
-          defaultValue: '50' }),
-        React.createElement(
-          'small',
-          null,
-          'Osc1Detune'
-        ),
-        React.createElement('input', { className: 'keyboardParams',
-          type: 'range',
-          onChange: this.props.keyParamsHandler,
-          name: 'osc1Detune',
-          defaultValue: '0' }),
-        React.createElement(
-          'small',
-          null,
-          'Osc2Detune'
-        ),
-        React.createElement('input', { className: 'keyboardParams',
-          type: 'range',
-          onChange: this.props.keyParamsHandler,
-          name: 'osc2Detune',
-          defaultValue: '0' })
-      )
+          'option',
+          { value: 'bandpass' },
+          'Bandpass'
+        )
+      ),
+      paramSliders
     );
   }
 
@@ -20817,6 +20739,51 @@ var Key = React.createClass({
       'div',
       { className: this.state.className },
       this.props.myLetter.toUpperCase()
+    );
+  }
+});
+
+var KeyParamSlider = React.createClass({
+  displayName: 'KeyParamSlider',
+
+  render: function render() {
+    return React.createElement(
+      'div',
+      null,
+      React.createElement(
+        'small',
+        null,
+        this.props.labelName
+      ),
+      React.createElement('input', { type: 'range',
+        className: 'keyboardParams',
+        onChange: this.props.keyParamsHandler,
+        name: this.props.name,
+        defaultValue: '0'
+      })
+    );
+  }
+});
+
+var KeyParamSelector = React.createClass({
+  displayName: 'KeyParamSelector',
+
+  render: function render() {
+    return React.createElement(
+      'div',
+      null,
+      React.createElement(
+        'small',
+        null,
+        this.props.labelName
+      ),
+      React.createElement(
+        'select',
+        { className: 'keyboardParams',
+          name: this.props.name,
+          onChange: this.props.keyParamsHandler },
+        this.props.options
+      )
     );
   }
 });

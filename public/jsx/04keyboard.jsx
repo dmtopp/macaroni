@@ -40,24 +40,39 @@ var Keyboard = React.createClass({
                   keyboardUp={ self.props.keyboardUp } />
     })
 
+    var sliderParamNames = [['attack', 'Attack'],
+                            ['release', 'Release'],
+                            ['filterCutoff', 'Filter Cutoff'],
+                            ['osc1Detune', 'Oscillator 1 Detune'],
+                            ['osc2Detune', 'Oscillator 2 Detune']];
+
+    var selectParamNames = [['osc1', 'Oscillator 1'],
+                            ['osc2', 'Oscillator 2'],
+                            ['filterType', 'Filter Type']]
+
+    var oscOptions = [['square', 'Square'],
+                      ['sine', 'Sine'],
+                      ['triangle', 'Triange'],
+                      ['sawtooth', 'Sawtooth']];
+
+    var selectOscOptions = oscOptions.map(function(option, i) {
+      return <option value={ option[0] } key={ i }>{ option[1] }</option>
+    })
+
+    var paramSelectors = selectParamNames.map(function(paramName, i) {
+      return <KeyParamSelector key={ i } name={ paramName[0] } labelName={ paramName[1] } options={ selectOscOptions }/>
+    })
+
+    var paramSliders = sliderParamNames.map(function(paramName, i) {
+      return <KeyParamSlider key={ i } name={ paramName[0] } labelName={ paramName[1] } />
+    })
+
+
     return (
 
-      // note to self:  see if ya can DRY this out, k?
       <div className='keyboardContainer'>
         { keys }
-        <select className="keyboardParams" name="osc1" onChange={ this.props.keyParamsHandler }>
-          <option value="square">Square</option>
-          <option value="sine">Sine</option>
-          <option value="triangle">Triangle</option>
-          <option value="sawtooth">Sawtooth</option>
-        </select>
-
-        <select className="keyboardParams" name="osc2" onChange={ this.props.keyParamsHandler }>
-          <option value="square">Square</option>
-          <option value="sine">Sine</option>
-          <option value="triangle">Triangle</option>
-          <option value="sawtooth">Sawtooth</option>
-        </select>
+        { paramSelectors }
 
         <select className="keyboardParams" name="filterType" onChange={ this.props.keyParamsHandler }>
           <option value="lowpass">Lowpass</option>
@@ -65,36 +80,7 @@ var Keyboard = React.createClass({
           <option value="bandpass">Bandpass</option>
         </select>
 
-        <small>Attack</small>
-        <input className="keyboardParams"
-               type="range"
-               onChange={ this.props.keyParamsHandler }
-               name="attack"
-               defaultValue="0" />
-        <small>Release</small>
-        <input className="keyboardParams"
-               type="range"
-               onChange={ this.props.keyParamsHandler }
-               name="release"
-               defaultValue="0" />
-        <small>Cutoff</small>
-        <input className="keyboardParams"
-               type="range"
-               onChange={ this.props.keyParamsHandler }
-               name="filterCutoff"
-               defaultValue="50" />
-        <small>Osc1Detune</small>
-        <input className="keyboardParams"
-               type="range"
-               onChange={ this.props.keyParamsHandler }
-               name="osc1Detune"
-               defaultValue="0" />
-        <small>Osc2Detune</small>
-        <input className="keyboardParams"
-               type="range"
-               onChange={ this.props.keyParamsHandler }
-               name="osc2Detune"
-               defaultValue="0" />
+        { paramSliders }
       </div>
     )
   }
@@ -142,6 +128,38 @@ var Key = React.createClass({
     </div>
   }
 })
+
+var KeyParamSlider = React.createClass({
+  render: function() {
+    return(<div>
+      <small>{ this.props.labelName }</small>
+      <input type="range"
+             className="keyboardParams"
+             onChange={ this.props.keyParamsHandler }
+             name={ this.props.name }
+             defaultValue="0"
+             />
+    </div>
+
+    )
+  }
+})
+
+var KeyParamSelector = React.createClass({
+  render: function() {
+    return(
+      <div>
+        <small>{ this.props.labelName }</small>
+        <select className="keyboardParams"
+                name={ this.props.name }
+                onChange={ this.props.keyParamsHandler }>
+          { this.props.options }
+        </select>
+      </div>
+    )
+  }
+})
+
 
 /* End keyboard and key components
 * ============================================================================= */
