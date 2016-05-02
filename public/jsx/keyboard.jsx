@@ -1,6 +1,8 @@
 var React           = require('react'),
     ReactDOM        = require('react-dom'),
-    ReactTransition = require('react-addons-css-transition-group');
+    ReactTransition = require('react-addons-css-transition-group'),
+    sounds          = require('../data/sounds.js'),
+    keyboardData    = require('../data/keyboardData.js');
 
 
 /* 'Global' container component
@@ -17,55 +19,13 @@ var Container = React.createClass({
     masterVolume.gain.value = 0.3;
     masterVolume.connect(context.destination);
 
-    var sounds = [{
-                    url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409274kick.wav",
-                    buffer: ''
-                  },
-                  {
-                    url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409275snare.wav",
-                    buffer: ''
-                  },
-                  {
-                    url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409276tin.wav",
-                    buffer: ''
-                  },
-                  {
-                    url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409278hat.wav",
-                    buffer: ''
-                  },
-                  {
-                    url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409274kick.wav",
-                    buffer: ''
-                  },
-                  {
-                    url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409275snare.wav",
-                    buffer: ''
-                  },
-                  {
-                    url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409276tin.wav",
-                    buffer: ''
-                  },
-                  {
-                    url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409278hat.wav",
-                    buffer: ''
-                  }];
-
     return {
       sockets: io.connect(),
       context: context,
       masterVolume: masterVolume,
       oscillators: {},
       messages: ['Welcome to macaroni!  Enter a room name to join or start a noodle.'],
-      keyboardData: {
-        osc1: 'square',
-        osc2: 'triangle',
-        attack: 0.001,
-        release: 0.5,
-        filterType: 'lowpass',
-        filterCutoff: 2000,
-        osc1Detune: -5,
-        osc2Detune: 5
-      },
+      keyboardData: keyboardData,
       sounds: sounds
     }
   },
@@ -214,9 +174,10 @@ var Container = React.createClass({
   },
   joinRoom: function(roomName) {
     this.state.sockets.emit('join-room', roomName);
+    this.sendMessage('You have joined ' + roomName);
   },
-  sendMessage: function(textNode) {
-    this.state.sockets.emit('send-message', textNode);
+  sendMessage: function(text) {
+    this.state.sockets.emit('send-message', text);
   },
   render: function() {
     return <div>
@@ -273,6 +234,9 @@ var ChatContainer = React.createClass({
       this.props.sendMessage(text);
     }
   },
+  joinRoom: function() {
+    this.props.joinRoom(this.state.roomName);
+  },
   handleChange: function(e) {
     var state = this.state;
     state[e.target.name] = e.target.value;
@@ -297,7 +261,7 @@ var ChatContainer = React.createClass({
              name="roomName"
              value={ this.state.roomName }
              onChange={ this.handleChange } />
-      <button onClick={ this.props.joinRoom }>Join Room</button>
+           <button onClick={ this.joinRoom }>Join Room</button>
     </div>
   }
 })

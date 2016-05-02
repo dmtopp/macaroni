@@ -20192,11 +20192,41 @@ module.exports = validateDOMNesting;
 module.exports = require('./lib/React');
 
 },{"./lib/React":57}],175:[function(require,module,exports){
+"use strict";
+
+module.exports = [{
+  url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409274kick.wav",
+  buffer: ''
+}, {
+  url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409275snare.wav",
+  buffer: ''
+}, {
+  url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409276tin.wav",
+  buffer: ''
+}, {
+  url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409278hat.wav",
+  buffer: ''
+}, {
+  url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409274kick.wav",
+  buffer: ''
+}, {
+  url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409275snare.wav",
+  buffer: ''
+}, {
+  url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409276tin.wav",
+  buffer: ''
+}, {
+  url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409278hat.wav",
+  buffer: ''
+}];
+
+},{}],176:[function(require,module,exports){
 'use strict';
 
 var React = require('react'),
     ReactDOM = require('react-dom'),
-    ReactTransition = require('react-addons-css-transition-group');
+    ReactTransition = require('react-addons-css-transition-group'),
+    sounds = require('../data/sounds.js');
 
 /* 'Global' container component
 * =============================================================================
@@ -20214,31 +20244,38 @@ var Container = React.createClass({
     masterVolume.gain.value = 0.3;
     masterVolume.connect(context.destination);
 
-    var sounds = [{
-      url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409274kick.wav",
-      buffer: ''
-    }, {
-      url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409275snare.wav",
-      buffer: ''
-    }, {
-      url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409276tin.wav",
-      buffer: ''
-    }, {
-      url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409278hat.wav",
-      buffer: ''
-    }, {
-      url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409274kick.wav",
-      buffer: ''
-    }, {
-      url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409275snare.wav",
-      buffer: ''
-    }, {
-      url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409276tin.wav",
-      buffer: ''
-    }, {
-      url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409278hat.wav",
-      buffer: ''
-    }];
+    // var sounds = [{
+    //                 url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409274kick.wav",
+    //                 buffer: ''
+    //               },
+    //               {
+    //                 url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409275snare.wav",
+    //                 buffer: ''
+    //               },
+    //               {
+    //                 url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409276tin.wav",
+    //                 buffer: ''
+    //               },
+    //               {
+    //                 url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409278hat.wav",
+    //                 buffer: ''
+    //               },
+    //               {
+    //                 url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409274kick.wav",
+    //                 buffer: ''
+    //               },
+    //               {
+    //                 url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409275snare.wav",
+    //                 buffer: ''
+    //               },
+    //               {
+    //                 url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409276tin.wav",
+    //                 buffer: ''
+    //               },
+    //               {
+    //                 url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409278hat.wav",
+    //                 buffer: ''
+    //               }];
 
     return {
       sockets: io.connect(),
@@ -20260,7 +20297,6 @@ var Container = React.createClass({
     };
   },
   loadAudio: function loadAudio(object, url) {
-    // console.log('load audio function');
     var request = new XMLHttpRequest();
     var context = this.state.context;
 
@@ -20295,12 +20331,10 @@ var Container = React.createClass({
     // sockets event handlers
     // ----------------------
     sockets.on('keyboardDown', function (keyboardData) {
-      // console.log(keyboardData.frequency);
       self.playNote(keyboardData.data, keyboardData.frequency);
     });
 
     sockets.on('keyboardUp', function (keyboardData) {
-      // console.log(self.state.oscillators);
       var release = keyboardData.data.release,
           frequency = keyboardData.frequency,
           context = self.state.context;
@@ -20315,12 +20349,10 @@ var Container = React.createClass({
       var state = self.state;
       state.messages.push(message);
       self.setState(state);
-      // console.log(self.state.messages);
     });
   },
   // handles the user's changing of keyboard parameters
   keyParamsHandler: function keyParamsHandler(e) {
-    // console.log(e.target);
     var name = e.target.name;
     var value = e.target.value;
     var state = this.state;
@@ -20407,9 +20439,10 @@ var Container = React.createClass({
   },
   joinRoom: function joinRoom(roomName) {
     this.state.sockets.emit('join-room', roomName);
+    this.sendMessage('You have joined ' + roomName);
   },
-  sendMessage: function sendMessage(textNode) {
-    this.state.sockets.emit('send-message', textNode);
+  sendMessage: function sendMessage(text) {
+    this.state.sockets.emit('send-message', text);
   },
   render: function render() {
     return React.createElement(
@@ -20464,13 +20497,15 @@ var ChatContainer = React.createClass({
       this.props.sendMessage(text);
     }
   },
+  joinRoom: function joinRoom() {
+    this.props.joinRoom(this.state.roomName);
+  },
   handleChange: function handleChange(e) {
     var state = this.state;
     state[e.target.name] = e.target.value;
     this.setState(state);
   },
   render: function render() {
-    console.log(this.props.messages);
     var messages = this.props.messages.map(function (message, i) {
       return React.createElement(Message, { text: message, key: i });
     });
@@ -20497,7 +20532,7 @@ var ChatContainer = React.createClass({
         onChange: this.handleChange }),
       React.createElement(
         'button',
-        { onClick: this.props.joinRoom },
+        { onClick: this.joinRoom },
         'Join Room'
       )
     );
@@ -20893,4 +20928,4 @@ var DrumPad = React.createClass({
 
 ReactDOM.render(React.createElement(Container, null), document.querySelector('#react-container'));
 
-},{"react":174,"react-addons-css-transition-group":30,"react-dom":31}]},{},[175]);
+},{"../data/sounds.js":175,"react":174,"react-addons-css-transition-group":30,"react-dom":31}]},{},[176]);
