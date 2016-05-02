@@ -2,6 +2,8 @@ var React           = require('react'),
     ReactDOM        = require('react-dom'),
     ReactTransition = require('react-addons-css-transition-group');
 
+
+
 /* 'Global' container component
 * =============================================================================
 * The all-seeing, all-knowing parent component.  Contains information about
@@ -11,9 +13,16 @@ var React           = require('react'),
 * ============================================================================= */
 var Container = React.createClass({
   getInitialState: function() {
+    var context = new AudioContext;
+    var masterVolume = context.createGain();
+
+    masterVolume.gain.value = 0.3;
+    masterVolume.connect(context.destination);
+
     return {
       sockets: io.connect(),
-      context: new AudioContext(),
+      context: context,
+      masterVolume: masterVolume,
       oscillators: {},
       keyboardData: {
         osc1: 'square',
@@ -29,20 +38,18 @@ var Container = React.createClass({
   },
   componentDidMount: function(){
     var sockets = this.state.sockets,
-        keyboardData = this.state.keyboardData;
+        keyboardData = this.state.keyboardData,
+        self = this;
     sockets.on('keyboardDown', function(keyboardData){
-      console.log('key down');
-      console.log(keyboardData);
       // console.log(keyboardData.frequency);
-      // playNote(keyboardData.data, keyboardData.frequency);
+      self.playNote(keyboardData.data, keyboardData.frequency);
     })
 
     sockets.on('keyboardUp', function(keyboardData){
-      console.log('key up');
-      console.log(keyboardData);
-      // release = keyboardData.data.release;
-      // frequency = keyboardData.frequency;
-      // oscillators[frequency].volume.gain.setTargetAtTime(0, context.currentTime, release);
+      var release = keyboardData.data.release,
+          frequency = keyboardData.frequency,
+          context = self.state.context;
+      self.state.oscillators[frequency].volume.gain.setTargetAtTime(0, context.currentTime, release);
     })
 
 
@@ -78,10 +85,10 @@ var Container = React.createClass({
     osc.connect(oscVolume);
     osc2.connect(oscVolume);
     oscVolume.connect(filter);
-    filter.connect(masterVolume);
+    filter.connect(this.state.masterVolume);
 
     // keep track of our oscillators and volume in state
-    oscObject = {
+    var oscObject = {
       voices: [osc],
       volume: oscVolume
     }
@@ -98,11 +105,11 @@ var Container = React.createClass({
     this.state.sockets.emit('keyboardDown', oscSocketData);
   },
   keyboardUp: function(frequency) {
-    oscSocketData = {
+    var oscSocketData = {
       data: this.state.keyboardData,
       frequency: frequency
     }
-    sockets.emit('keyboardUp', oscSocketData);
+    this.state.sockets.emit('keyboardUp', oscSocketData);
   },
   render: function() {
     return <InstrumentContainer keyboardDown={ this.keyboardDown } keyboardUp={ this.keyboardUp } />
@@ -179,6 +186,7 @@ var Keyboard = React.createClass({
   render: function() {
     var notesInOrder = this.state.notesInOrder,
         octave = this.state.octave,
+        self = this,
         noteOctave,
         note,
         className,
@@ -204,8 +212,8 @@ var Keyboard = React.createClass({
                   key={ i }
                   className={ className }
                   keyNumber={ keyNumber }
-                  keyboardDown={ this.props.keyboardDown }
-                  keyboardUp={ this.props.keyboardUp } />
+                  keyboardDown={ self.props.keyboardDown }
+                  keyboardUp={ self.props.keyboardUp } />
     })
 
     return (
