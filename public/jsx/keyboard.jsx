@@ -3,7 +3,6 @@ var React           = require('react'),
     ReactTransition = require('react-addons-css-transition-group');
 
 
-
 /* 'Global' container component
 * =============================================================================
 * The all-seeing, all-knowing parent component.  Contains information about
@@ -18,11 +17,45 @@ var Container = React.createClass({
     masterVolume.gain.value = 0.3;
     masterVolume.connect(context.destination);
 
+    var sounds = [{
+                    url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409274kick.wav",
+                    buffer: ''
+                  },
+                  {
+                    url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409275snare.wav",
+                    buffer: ''
+                  },
+                  {
+                    url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409276tin.wav",
+                    buffer: ''
+                  },
+                  {
+                    url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409278hat.wav",
+                    buffer: ''
+                  },
+                  {
+                    url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409274kick.wav",
+                    buffer: ''
+                  },
+                  {
+                    url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409275snare.wav",
+                    buffer: ''
+                  },
+                  {
+                    url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409276tin.wav",
+                    buffer: ''
+                  },
+                  {
+                    url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409278hat.wav",
+                    buffer: ''
+                  }];
+
     return {
       sockets: io.connect(),
       context: context,
       masterVolume: masterVolume,
       oscillators: {},
+      messages: ['Welcome to macaroni!  Enter a room name to join or start a noodle.'],
       keyboardData: {
         osc1: 'square',
         osc2: 'triangle',
@@ -32,23 +65,65 @@ var Container = React.createClass({
         filterCutoff: 2000,
         osc1Detune: -5,
         osc2Detune: 5
-      }
+      },
+      sounds: sounds
     }
   },
-  componentDidMount: function(){
+  loadAudio: function(object, url) {
+    // console.log('load audio function');
+    var request = new XMLHttpRequest();
+    var context = this.state.context;
+
+    request.open('GET', url, true);
+    request.responseType = 'arraybuffer';
+
+    request.onload = function() {
+      context.decodeAudioData(request.response, function(buffer){
+        object.buffer = buffer;
+      });
+    }
+
+    request.send();
+  },
+  componentDidMount: function() {
     var sockets = this.state.sockets,
         keyboardData = this.state.keyboardData,
-        self = this;
-    sockets.on('keyboardDown', function(keyboardData){
+        self = this,
+        context = this.state.context;
+
+    this.state.sounds.forEach(function(sound){
+      self.loadAudio(sound, sound.url);
+      sound.play = function () {
+        var s = context.createBufferSource();
+        s.buffer = sound.buffer;
+        s.connect(self.state.masterVolume);
+        s.start(0);
+        sound.s = s;
+      }
+    })
+
+    // sockets event handlers
+    // ----------------------
+    sockets.on('keyboardDown', function(keyboardData) {
       // console.log(keyboardData.frequency);
       self.playNote(keyboardData.data, keyboardData.frequency);
     })
 
-    sockets.on('keyboardUp', function(keyboardData){
+    sockets.on('keyboardUp', function(keyboardData) {
+      // console.log(self.state.oscillators);
       var release = keyboardData.data.release,
           frequency = keyboardData.frequency,
           context = self.state.context;
       self.state.oscillators[frequency].volume.gain.setTargetAtTime(0, context.currentTime, release);
+    })
+
+    sockets.on('drumPadTrigger', function(padNumber) {
+      self.state.sounds[padNumber].play();
+    })
+
+    sockets.on('new-message', function(message) {
+      self.state.messages.push(message);
+      // console.log(self.state.messages);
     })
 
   },
@@ -80,7 +155,7 @@ var Container = React.createClass({
 
     this.setState(state);
   },
-  playNote: function(data, frequency){
+  playNote: function(data, frequency) {
     var state = this.state;
     var context = this.state.context;
     var osc = context.createOscillator();
@@ -137,14 +212,110 @@ var Container = React.createClass({
     }
     this.state.sockets.emit('keyboardUp', oscSocketData);
   },
+  drumPadTrigger: function(padNumber) {
+    this.state.sockets.emit('drumPadTrigger', padNumber);
+  },
+  joinRoom: function(roomName) {
+    this.state.sockets.emit('join-room', roomName);
+  },
+  sendMessage: function(textNode) {
+    this.state.sockets.emit('send-message', textNode);
+  },
   render: function() {
-    return <InstrumentContainer keyboardDown={ this.keyboardDown }
-                                keyboardUp={ this.keyboardUp }
-                                keyParamsHandler={ this.keyParamsHandler } />
+    return <div>
+      <InstrumentContainer keyboardDown={ this.keyboardDown }
+                                    keyboardUp={ this.keyboardUp }
+                                    keyParamsHandler={ this.keyParamsHandler }
+                                    drumPadTrigger={ this.drumPadTrigger } />
+
+      <ChatContainer joinRoom={ this.joinRoom }
+                     sendMessage={ this.sendMessage }
+                     messages={ this.state.messages } />
+    </div>
   }
 })
+
 /* End container component
 * ============================================================================= */
+
+
+
+
+/* Chat container component
+* =============================================================================
+* ============================================================================= */
+var ChatContainer = React.createClass({
+  getInitialState: function() {
+    return {
+      message: '',
+      roomName: ''
+    }
+  },
+  componentDidMount: function() {
+    this.addMessage();
+    var inputs = document.querySelectorAll('input');
+
+
+    // stop our inputs from triggering our instrument sounds
+    for (var i = 0; i < inputs.length; i++) {
+      inputs[i].addEventListener('keydown', function(e) {
+        e.stopPropagation();
+      })
+      inputs[i].addEventListener('keyup', function(e) {
+        e.stopPropagation();
+      })
+    }
+
+  },
+  addMessage: function() {
+    var text = this.state.message
+    if (text) {
+      var state = this.state;
+      state.message = '';
+      this.setState(state);
+      this.props.sendMessage(text);
+    }
+  },
+  handleChange: function(e) {
+    var state = this.state;
+    state[e.target.name] = e.target.value;
+    this.setState(state);
+  },
+  render: function() {
+    console.log(this.props.messages);
+    var messages = this.props.messages.map(function(message, i) {
+      return <Message text={ message } key={ i } />
+    })
+    return <div>
+      <section id="chat">
+        { messages }
+      </section>
+
+      <input id="chat-message"
+             name="message"
+             value={ this.state.message }
+             onChange={ this.handleChange } />
+      <button onClick={ this.addMessage }>Send</button>
+
+      <input id="room-name"
+             name="roomName"
+             value={ this.state.roomName }
+             onChange={ this.handleChange } />
+      <button onClick={ this.props.joinRoom }>Join Room</button>
+    </div>
+  }
+})
+
+var Message = React.createClass({
+  render: function() {
+    return <p>{ this.props.text }</p>
+  }
+})
+
+/* End chat container component
+* ============================================================================= */
+
+
 
 /* Instrument container component
 * =============================================================================
@@ -169,7 +340,7 @@ var InstrumentContainer = React.createClass({
           { this.state.showKeyboard ? <Keyboard keyboardDown={ this.props.keyboardDown }
                                                 keyboardUp={ this.props.keyboardUp }
                                                 keyParamsHandler={ this.props.keyParamsHandler } />
-                                    : <DrumMachine /> }
+                                    : <DrumMachine drumPadTrigger={ this.props.drumPadTrigger }/> }
         </ReactTransition>
         <button type="button" onClick={ this.switchInstruments }>{ this.state.showKeyboard ? 'Drums' : 'Keyboard' }</button>
       </div>
@@ -179,6 +350,9 @@ var InstrumentContainer = React.createClass({
 
 /* End instrument container component
 * ============================================================================= */
+
+
+
 
 /* Keyboard and key components
  * =============================================================================
@@ -219,7 +393,7 @@ var Keyboard = React.createClass({
         className,
         keyNumber;
 
-    var keys = this.state.keyCodes.map(function(key, i){
+    var keys = this.state.keyCodes.map(function(key, i) {
       // adjust our octave if we are past the first 12 notes
       noteOctave = i > 11 ? String(octave + 1) : String(octave),
       note = notesInOrder[i % 12] + noteOctave,
@@ -384,8 +558,9 @@ var DrumMachine = React.createClass({
     }
   },
   render: function() {
-    var pads = this.state.keyCodes.map(function(key, i){
-      return <DrumPad myLetter={ key[0] } myKey={ key[1] } key={ i } />
+    var self = this;
+    var pads = this.state.keyCodes.map(function(key, i) {
+      return <DrumPad myLetter={ key[0] } myKey={ key[1] } key={ i } padNumber={ i } drumPadTrigger={ self.props.drumPadTrigger }/>
     })
     return (<div className='drum-machine-container'>
       { pads }
@@ -412,6 +587,7 @@ var DrumPad = React.createClass({
   },
   keydown: function(e) {
     if (e.keyCode === this.props.myKey) {
+      this.props.drumPadTrigger(this.props.padNumber);
       var state = this.state;
       state.className = state.className + ' pressed';
       this.setState(state);

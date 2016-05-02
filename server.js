@@ -37,10 +37,10 @@ io.sockets.on('connection', function(socket){
   })
 
   // event listener for drum triggers
-  socket.on('buttonPress', function(buttonId){
-    console.log(socket.rooms);
+  socket.on('drumPadTrigger', function(padNumber){
+    // console.log(socket.rooms);
     for (room in socket.rooms) {
-      io.sockets.in(socket.rooms[room]).emit('playSound', buttonId);
+      io.sockets.in(socket.rooms[room]).emit('drumPadTrigger', padNumber);
     }
 
   })
@@ -59,11 +59,11 @@ io.sockets.on('connection', function(socket){
     }
 
   })
-  
+
   // event listener for sent message
-  socket.on('send message', function(data){
+  socket.on('send-message', function(data){
     for (room in socket.rooms) {
-      io.sockets.in(socket.rooms[room]).emit('new message', data);
+      io.sockets.in(socket.rooms[room]).emit('new-message', data);
     }
 
   });
