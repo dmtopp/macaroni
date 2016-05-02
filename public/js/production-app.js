@@ -20312,7 +20312,9 @@ var Container = React.createClass({
     });
 
     sockets.on('new-message', function (message) {
-      self.state.messages.push(message);
+      var state = self.state;
+      state.messages.push(message);
+      self.setState(state);
       // console.log(self.state.messages);
     });
   },
@@ -20443,6 +20445,7 @@ var ChatContainer = React.createClass({
     this.addMessage();
     var inputs = document.querySelectorAll('input');
 
+    // stop our inputs from triggering our instrument sounds
     for (var i = 0; i < inputs.length; i++) {
       inputs[i].addEventListener('keydown', function (e) {
         e.stopPropagation();

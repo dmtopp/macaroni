@@ -70,7 +70,6 @@ var Container = React.createClass({
     }
   },
   loadAudio: function(object, url) {
-    // console.log('load audio function');
     var request = new XMLHttpRequest();
     var context = this.state.context;
 
@@ -105,12 +104,10 @@ var Container = React.createClass({
     // sockets event handlers
     // ----------------------
     sockets.on('keyboardDown', function(keyboardData) {
-      // console.log(keyboardData.frequency);
       self.playNote(keyboardData.data, keyboardData.frequency);
     })
 
     sockets.on('keyboardUp', function(keyboardData) {
-      // console.log(self.state.oscillators);
       var release = keyboardData.data.release,
           frequency = keyboardData.frequency,
           context = self.state.context;
@@ -122,14 +119,14 @@ var Container = React.createClass({
     })
 
     sockets.on('new-message', function(message) {
-      self.state.messages.push(message);
-      // console.log(self.state.messages);
+      var state = self.state;
+      state.messages.push(message);
+      self.setState(state);
     })
 
   },
   // handles the user's changing of keyboard parameters
   keyParamsHandler: function(e) {
-    // console.log(e.target);
     var name = e.target.name;
     var value = e.target.value;
     var state = this.state;
@@ -282,7 +279,6 @@ var ChatContainer = React.createClass({
     this.setState(state);
   },
   render: function() {
-    console.log(this.props.messages);
     var messages = this.props.messages.map(function(message, i) {
       return <Message text={ message } key={ i } />
     })
