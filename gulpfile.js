@@ -15,7 +15,7 @@ gulp.task('less', function() {
 });
 
 gulp.task('react', function(){
-  return gulp.src('./public/jsx/keyboard.jsx') // place to read react files from
+  return gulp.src('./public/jsx/*.jsx') // place to read react files from
     .pipe(tap(function(file) {
       file.contents = browserify(file.path).transform('babelify', {presets: ['es2015', 'react']}).bundle()
     }))

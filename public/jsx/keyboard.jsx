@@ -181,10 +181,11 @@ var Container = React.createClass({
   },
   render: function() {
     return <div>
-      <InstrumentContainer keyboardDown={ this.keyboardDown }
-                                    keyboardUp={ this.keyboardUp }
-                                    keyParamsHandler={ this.keyParamsHandler }
-                                    drumPadTrigger={ this.drumPadTrigger } />
+      <InstrumentContainer  keyboardDown={ this.keyboardDown }
+                            keyboardUp={ this.keyboardUp }
+                            keyParamsHandler={ this.keyParamsHandler }
+                            drumPadTrigger={ this.drumPadTrigger } />
+
 
       <ChatContainer joinRoom={ this.joinRoom }
                      sendMessage={ this.sendMessage }
@@ -319,28 +320,9 @@ var InstrumentContainer = React.createClass({
  * ============================================================================= */
 var Keyboard = React.createClass({
   getInitialState: function() {
-    var notesInOrder = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-    var keyCodes = [[ 'a', 65 ],
-                    [ 'w', 87 ],
-                    [ 's', 83 ],
-                    [ 'e', 69 ],
-                    [ 'd', 68 ],
-                    [ 'f', 70 ],
-                    [ 't', 84 ],
-                    [ 'g', 71 ],
-                    [ 'y', 89 ],
-                    [ 'h', 72 ],
-                    [ 'u', 85 ],
-                    [ 'j', 74 ],
-                    [ 'k', 75 ],
-                    [ 'o', 79 ],
-                    [ 'l', 76 ],
-                    [ 'p', 80 ],
-                    [ ';', 186 ],
-                    [ '\'', 222]];
     return {
-      keyCodes: keyCodes,
-      notesInOrder: notesInOrder,
+      keyCodes: require('../data/keyCodesKeyboard.js'),
+      notesInOrder: ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'],
       octave: 4
     }
   },
@@ -355,20 +337,15 @@ var Keyboard = React.createClass({
 
     var keys = this.state.keyCodes.map(function(key, i) {
       // adjust our octave if we are past the first 12 notes
-      noteOctave = i > 11 ? String(octave + 1) : String(octave),
-      note = notesInOrder[i % 12] + noteOctave,
-      // notes that have a # on them are black keys!
+      noteOctave = i > 11 ? String(octave + 1) : String(octave);
+      note = notesInOrder[i % 12] + noteOctave;
       className = note.length === 3 ? 'blackKey' : 'whiteKey';
-
-      // key number is the midi note number for our note
-      // currently there are no connection features in this project
-      // but it gives us a nice way to find the frequency
+      // MIDI number for our note
       keyNumber = i + (octave * 12)  + 12;
 
       // myKey = alphanumeric keyboard key to map to the musical keyboard key
       // key = index for react to use so it doesn't freak out
-      return <Key note={ note }
-                  myKey={ key[1] }
+      return <Key myKey={ key[1] }
                   myLetter={ key[0] }
                   key={ i }
                   className={ className }
@@ -465,9 +442,6 @@ var Key = React.createClass({
     }
   },
   componentDidMount: function() {
-    var note = this.props.note;
-    var myKey = this.props.myKey;
-    var frequency = this.state.frequency;
     // each key listents for its own keycode to be pressed
     document.addEventListener('keydown', this.keydown);
     document.addEventListener('keyup', this.keyup);
@@ -476,14 +450,8 @@ var Key = React.createClass({
     document.removeEventListener('keydown', this.keydown);
     document.removeEventListener('keyup', this.keyup);
   },
-  mouseDown: function() {
-    // these functions are left here so mouse input functionality can be added later
-  },
-  mouseUp: function() {
-    // these functions are left here so mouse input functionality can be added later
-  },
   render: function() {
-    return <div className={ this.state.className } onMouseDown={ this.mouseDown } onMouseUp={ this.mouseUp }>
+    return <div className={ this.state.className }>
       { this.props.myLetter.toUpperCase() }
     </div>
   }
@@ -505,16 +473,8 @@ var Key = React.createClass({
 
 var DrumMachine = React.createClass({
   getInitialState: function() {
-    var keyCodes = [[ 'a', 65 ],
-                    [ 's', 83 ],
-                    [ 'd', 68 ],
-                    [ 'f', 70 ],
-                    [ 'j', 74 ],
-                    [ 'k', 75 ],
-                    [ 'l', 76 ],
-                    [ ';', 186 ]]
     return {
-      keyCodes: keyCodes
+      keyCodes: require('../data/keyCodesDrumPad.js')
     }
   },
   render: function() {
