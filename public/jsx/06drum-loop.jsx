@@ -14,31 +14,16 @@ var DrumLoop = React.createClass({
                   '3': [],
                   '4': [],
                   '5': [] },
-      measure: 1
+      playing: false
     }
   },
   componentDidMount: function() {
-    // this.state.dilla.set('kick', [
-    //   ['1.1.01'],
-    //   ['1.2.01'],
-    //   ['1.3.01'],
-    //   ['1.4.01'],
-    //   ['2.1.01'],
-    //   ['2.2.01'],
-    //   ['2.3.01'],
-    //   ['2.4.01']
-    // ]);
-
     var self = this;
     this.state.dilla.on('step', function(step) {
-      // console.log(step);
-      // console.log(this.state.dilla.position);
       self.props.drumPadTrigger({ padNumber: step.id,
                                   loop: false,
                                   time: step.time })
     })
-
-    this.state.dilla.start();
   },
   addNote: function(noteData) {
     var state = this.state,
@@ -62,6 +47,15 @@ var DrumLoop = React.createClass({
     this.state.dilla.set(channel, channelBeats);
 
   },
+  tempoHandler: function(e) {
+    this.state.dilla.setTempo(parseInt(e.target.value));
+  },
+  playHandler: function() {
+    var state = this.state;
+    state.playing ? this.state.dilla.stop() : this.state.dilla.start()
+    state.playing = !state.playing;
+    this.setState(state);
+  },
   render: function() {
     var BeatData = require('../data/drumMachineData.js');
     var allLoopButtons = [];
@@ -72,7 +66,17 @@ var DrumLoop = React.createClass({
       })
       allLoopButtons.push(buttons);
     }
-    return <div className="loop-container">{ allLoopButtons }</div>
+    return <div className="loop-container">
+            { allLoopButtons }
+            <small>Tempo</small>
+            { this.state.playing ? <button onClick={ this.playHandler }>Stop</button> : <button onClick={ this.playHandler }>Start</button> }
+            <input type="range"
+                   className="keyboardParams"
+                   onChange={ this.tempoHandler }
+                   defaultValue="88"
+                   min="40"
+                   max="255" />
+           </div>
   }
 })
 
@@ -85,7 +89,6 @@ var LoopButton = React.createClass({
   },
   loopToggle: function() {
     var state = this.state;
-    // console.log(this.props.instNumber, this.props.beat);
     this.props.addNote({ beat: this.props.beat,
                          channel: this.props.instNumber,
                          active: this.state.pressed,
