@@ -26511,6 +26511,29 @@ module.exports = {
 };
 
 },{}],216:[function(require,module,exports){
+'use strict';
+
+module.exports = [{
+  label: 'Username',
+  type: 'text',
+  name: 'username',
+  placeholder: 'Enter a username',
+  text: null
+}, {
+  label: 'Password',
+  type: 'password',
+  name: 'password',
+  placeholder: null,
+  text: null
+}, {
+  label: 'Confirm password',
+  type: 'password',
+  name: 'confirmPassword',
+  placeholder: null,
+  text: null
+}];
+
+},{}],217:[function(require,module,exports){
 "use strict";
 
 module.exports = [{
@@ -26542,7 +26565,7 @@ module.exports = [{
   buffer: ''
 }];
 
-},{}],217:[function(require,module,exports){
+},{}],218:[function(require,module,exports){
 'use strict';
 
 var React = require('react'),
@@ -26551,7 +26574,8 @@ var React = require('react'),
     sounds = require('../data/sounds.js'),
     keyboardData = require('../data/keyboardData.js'),
     InstrumentContainer = require('./03instrument-container.jsx'),
-    ChatContainer = require('./02chat.jsx');
+    ChatContainer = require('./02chat.jsx'),
+    LoginRegister = require('./07login-register.jsx');
 
 /* 'Global' container component
 * =============================================================================
@@ -26738,7 +26762,8 @@ var Container = React.createClass({
         context: this.state.context }),
       React.createElement(ChatContainer, { joinRoom: this.joinRoom,
         sendMessage: this.sendMessage,
-        messages: this.state.messages })
+        messages: this.state.messages }),
+      React.createElement(LoginRegister, null)
     );
   }
 });
@@ -26748,7 +26773,7 @@ var Container = React.createClass({
 
 ReactDOM.render(React.createElement(Container, null), document.querySelector('#react-container'));
 
-},{"../data/keyboardData.js":215,"../data/sounds.js":216,"./02chat.jsx":218,"./03instrument-container.jsx":219,"react":194,"react-addons-css-transition-group":50,"react-dom":51}],218:[function(require,module,exports){
+},{"../data/keyboardData.js":215,"../data/sounds.js":217,"./02chat.jsx":219,"./03instrument-container.jsx":220,"./07login-register.jsx":224,"react":194,"react-addons-css-transition-group":50,"react-dom":51}],219:[function(require,module,exports){
 'use strict';
 
 var React = require('react'),
@@ -26848,7 +26873,7 @@ var Message = React.createClass({
 
 module.exports = ChatContainer;
 
-},{"react":194,"react-addons-css-transition-group":50}],219:[function(require,module,exports){
+},{"react":194,"react-addons-css-transition-group":50}],220:[function(require,module,exports){
 'use strict';
 
 var React = require('react'),
@@ -26873,7 +26898,6 @@ var InstrumentContainer = React.createClass({
   switchInstruments: function switchInstruments(e) {
     var state = this.state;
     state.instrumentToDisplay += parseInt(e.target.value);
-    console.log(Math.abs(state.instrumentToDisplay));
     this.setState(state);
   },
   render: function render() {
@@ -26908,7 +26932,7 @@ var InstrumentContainer = React.createClass({
 * ============================================================================= */
 module.exports = InstrumentContainer;
 
-},{"./04keyboard.jsx":220,"./05drum-machine.jsx":221,"./06drum-loop.jsx":222,"react":194,"react-addons-css-transition-group":50}],220:[function(require,module,exports){
+},{"./04keyboard.jsx":221,"./05drum-machine.jsx":222,"./06drum-loop.jsx":223,"react":194,"react-addons-css-transition-group":50}],221:[function(require,module,exports){
 'use strict';
 
 var React = require('react'),
@@ -27103,7 +27127,7 @@ var KeyParamSelector = React.createClass({
 
 module.exports = Keyboard;
 
-},{"../data/keyCodesKeyboard.js":213,"../data/keyParamsData.js":214,"react":194,"react-addons-css-transition-group":50}],221:[function(require,module,exports){
+},{"../data/keyCodesKeyboard.js":213,"../data/keyParamsData.js":214,"react":194,"react-addons-css-transition-group":50}],222:[function(require,module,exports){
 'use strict';
 
 var React = require('react'),
@@ -27162,7 +27186,7 @@ var DrumPad = React.createClass({
   keydown: function keydown(e) {
     if (e.keyCode === this.props.myKey) {
       this.props.drumPadTrigger({ padNumber: this.props.padNumber,
-        loop: this.state.loop });
+        time: 0 });
       var state = this.state;
       state.className = state.className + ' pressed';
       this.setState(state);
@@ -27193,7 +27217,7 @@ var DrumPad = React.createClass({
 
 module.exports = DrumMachine;
 
-},{"../data/keyCodesDrumPad.js":212,"react":194,"react-addons-css-transition-group":50}],222:[function(require,module,exports){
+},{"../data/keyCodesDrumPad.js":212,"react":194,"react-addons-css-transition-group":50}],223:[function(require,module,exports){
 'use strict';
 
 var React = require('react'),
@@ -27325,4 +27349,89 @@ var LoopButton = React.createClass({
 
 module.exports = DrumLoop;
 
-},{"../data/drumMachineData.js":211,"dilla":7,"react":194,"react-addons-css-transition-group":50}]},{},[217]);
+},{"../data/drumMachineData.js":211,"dilla":7,"react":194,"react-addons-css-transition-group":50}],224:[function(require,module,exports){
+'use strict';
+
+var React = require('react'),
+    ReactTransition = require('react-addons-css-transition-group');
+
+var LoginSignup = React.createClass({
+  displayName: 'LoginSignup',
+
+  handleSubmit: function handleSubmit(e) {
+    console.log(e.target.value);
+  },
+  render: function render() {
+    var formParams = require('../data/loginParams.js');
+    // console.log(formParams);
+
+    var signup = formParams.map(function (data, i) {
+      return React.createElement(FormField, { key: i,
+        label: data.label,
+        type: data.type,
+        name: data.name,
+        placeholder: data.placeholder });
+    });
+
+    var login = formParams.map(function (data, i) {
+      return React.createElement(FormField, { key: i,
+        label: data.label,
+        type: data.type,
+        name: data.name,
+        placeholder: data.placeholder });
+    });
+    login.pop();
+    return React.createElement(
+      'div',
+      null,
+      React.createElement(
+        'section',
+        { className: 'form-container' },
+        signup,
+        React.createElement(
+          'button',
+          { onClick: this.handleSubmit },
+          'Submit'
+        )
+      ),
+      React.createElement(
+        'section',
+        { className: 'form-container' },
+        login,
+        React.createElement(
+          'button',
+          { onClick: this.handleSubmit },
+          'Submit'
+        )
+      )
+    );
+  }
+});
+
+var FormField = React.createClass({
+  displayName: 'FormField',
+
+  render: function render() {
+    return React.createElement(
+      'div',
+      null,
+      React.createElement(
+        'small',
+        null,
+        this.props.label
+      ),
+      React.createElement(
+        'input',
+        { type: this.props.type,
+          name: this.props.name,
+          placeholder: this.props.placeholder,
+          onClick: this.props.onClick },
+        this.props.text
+      )
+    );
+  }
+});
+
+module.exports = LoginSignup;
+
+},{"../data/loginParams.js":216,"react":194,"react-addons-css-transition-group":50}]},{},[218]);

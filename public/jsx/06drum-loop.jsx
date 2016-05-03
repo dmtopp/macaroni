@@ -1,6 +1,6 @@
-var React = require('react'),
+var React           = require('react'),
     ReactTransition = require('react-addons-css-transition-group'),
-    Dilla = require('dilla');
+    Dilla           = require('dilla');
 
 var DrumLoop = React.createClass({
   getInitialState: function() {

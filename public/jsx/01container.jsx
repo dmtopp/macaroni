@@ -1,10 +1,11 @@
-var React           = require('react'),
-    ReactDOM        = require('react-dom'),
-    ReactTransition = require('react-addons-css-transition-group'),
-    sounds          = require('../data/sounds.js'),
-    keyboardData    = require('../data/keyboardData.js'),
+var React               = require('react'),
+    ReactDOM            = require('react-dom'),
+    ReactTransition     = require('react-addons-css-transition-group'),
+    sounds              = require('../data/sounds.js'),
+    keyboardData        = require('../data/keyboardData.js'),
     InstrumentContainer = require('./03instrument-container.jsx'),
-    ChatContainer   = require('./02chat.jsx');
+    ChatContainer       = require('./02chat.jsx'),
+    LoginRegister       = require('./07login-register.jsx');
 
 
 /* 'Global' container component
@@ -193,6 +194,7 @@ var Container = React.createClass({
       <ChatContainer joinRoom={ this.joinRoom }
                      sendMessage={ this.sendMessage }
                      messages={ this.state.messages } />
+      <LoginRegister />
     </div>
   }
 })

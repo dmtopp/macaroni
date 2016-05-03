@@ -48,7 +48,7 @@ var DrumPad = React.createClass({
   keydown: function(e) {
     if (e.keyCode === this.props.myKey) {
       this.props.drumPadTrigger({ padNumber: this.props.padNumber,
-                                  loop: this.state.loop });
+                                  time: 0 });
       var state = this.state;
       state.className = state.className + ' pressed';
       this.setState(state);

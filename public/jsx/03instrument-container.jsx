@@ -19,7 +19,6 @@ var InstrumentContainer = React.createClass({
   switchInstruments: function(e) {
     var state = this.state;
     state.instrumentToDisplay += parseInt(e.target.value);
-    console.log(Math.abs(state.instrumentToDisplay));
     this.setState(state);
   },
   render: function() {
