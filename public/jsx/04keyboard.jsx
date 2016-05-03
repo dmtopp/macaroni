@@ -7,28 +7,33 @@ var React           = require('react'),
 var Keyboard = React.createClass({
   getInitialState: function() {
     return {
-      keyCodes: require('../data/keyCodesKeyboard.js'),
-      notesInOrder: ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'],
       octave: 4
     }
   },
+  changeOctave: function(e) {
+    // console.log(e.target.value);
+    var state = this.state;
+    state.octave += parseInt(e.target.value);
+    this.setState(state);
+    // console.log(this.state);
+  },
   render: function() {
-    var notesInOrder = this.state.notesInOrder,
+    var notesInOrder = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'],
+        keyCodes = require('../data/keyCodesKeyboard.js'),
         octave = this.state.octave,
         self = this,
-        noteOctave,
         note,
         className,
-        keyNumber;
+        keyNumber,
+        frequency;
 
-    var keys = this.state.keyCodes.map(function(key, i) {
+    var keys = keyCodes.map(function(key, i) {
       // adjust our octave if we are past the first 12 notes
-      noteOctave = i > 11 ? String(octave + 1) : String(octave);
-      note = notesInOrder[i % 12] + noteOctave;
-      className = note.length === 3 ? 'blackKey' : 'whiteKey';
+      note = notesInOrder[i % 12];
+      className = note.length === 2 ? 'blackKey' : 'whiteKey';
       // MIDI number for our note
       keyNumber = i + (octave * 12)  + 12;
-
+      frequency = 440 * Math.pow(2, (keyNumber - 69) / 12)
       // myKey = alphanumeric keyboard key to map to the musical keyboard key
       // key = index for react to use so it doesn't freak out
       return <Key myKey={ key[1] }
@@ -36,6 +41,7 @@ var Keyboard = React.createClass({
                   key={ i }
                   className={ className }
                   keyNumber={ keyNumber }
+                  frequency={ frequency }
                   keyboardDown={ self.props.keyboardDown }
                   keyboardUp={ self.props.keyboardUp } />
     })
@@ -66,6 +72,8 @@ var Keyboard = React.createClass({
         { keys }
         { paramSelectors }
         { paramSliders }
+        <button onClick={ this.changeOctave } value="1">+</button>
+        <button onClick={ this.changeOctave } value="-1">-</button>
       </div>
     )
   }
@@ -76,7 +84,6 @@ var Keyboard = React.createClass({
 var Key = React.createClass({
   getInitialState: function() {
     return {
-      frequency: 440 * Math.pow(2, (this.props.keyNumber - 69) / 12),
       className: this.props.className
     }
   },
@@ -86,7 +93,7 @@ var Key = React.createClass({
       state.className = state.className + ' pressed';
       this.setState(state);
 
-      this.props.keyboardDown(this.state.frequency);
+      this.props.keyboardDown(this.props.frequency);
     }
   },
   keyup: function(e) {
@@ -95,7 +102,7 @@ var Key = React.createClass({
       state.className = state.className.split(' ')[0];
       this.setState(state);
 
-      this.props.keyboardUp(this.state.frequency);
+      this.props.keyboardUp(this.props.frequency);
     }
   },
   componentDidMount: function() {

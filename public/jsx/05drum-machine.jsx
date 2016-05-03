@@ -13,14 +13,10 @@ var React           = require('react'),
 * ============================================================================= */
 
 var DrumMachine = React.createClass({
-  getInitialState: function() {
-    return {
-      keyCodes: require('../data/keyCodesDrumPad.js')
-    }
-  },
   render: function() {
     var self = this;
-    var pads = this.state.keyCodes.map(function(key, i) {
+    var keyCodes = require('../data/keyCodesDrumPad.js');
+    var pads = keyCodes.map(function(key, i) {
       return <DrumPad myLetter={ key[0] } myKey={ key[1] } key={ i } padNumber={ i } drumPadTrigger={ self.props.drumPadTrigger }/>
     })
     return (<div className='drum-machine-container'>
@@ -48,7 +44,8 @@ var DrumPad = React.createClass({
   },
   keydown: function(e) {
     if (e.keyCode === this.props.myKey) {
-      this.props.drumPadTrigger(this.props.padNumber);
+      this.props.drumPadTrigger({ padNumber: this.props.padNumber,
+                                  loop: this.state.loop });
       var state = this.state;
       state.className = state.className + ' pressed';
       this.setState(state);

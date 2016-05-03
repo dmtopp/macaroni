@@ -26,7 +26,7 @@ gulp.task('react', function(){
 });
 
 gulp.task('watch', function() {
-  gulp.watch(['./public/jsx/keyboard.js'], ['react']); // place to watch for react changes
+  gulp.watch(['./public/jsx/*.jsx'], ['react']); // place to watch for react changes
   gulp.watch(['./public/styles/less/style.less'], ['less']);
 });
 

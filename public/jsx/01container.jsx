@@ -4,7 +4,8 @@ var React           = require('react'),
     sounds          = require('../data/sounds.js'),
     keyboardData    = require('../data/keyboardData.js'),
     InstrumentContainer = require('./03instrument-container.jsx'),
-    ChatContainer   = require('./02chat.jsx');
+    ChatContainer   = require('./02chat.jsx'),
+    DrumLoop        = require('./06drum-loop.jsx');
 
 
 /* 'Global' container component
@@ -54,11 +55,11 @@ var Container = React.createClass({
 
     this.state.sounds.forEach(function(sound){
       self.loadAudio(sound, sound.url);
-      sound.play = function () {
+      sound.play = function (time) {
         var s = context.createBufferSource();
         s.buffer = sound.buffer;
         s.connect(self.state.masterVolume);
-        s.start(0);
+        s.start(time);
         sound.s = s;
       }
     })
@@ -76,8 +77,8 @@ var Container = React.createClass({
       self.state.oscillators[frequency].volume.gain.setTargetAtTime(0, context.currentTime, release);
     })
 
-    sockets.on('drumPadTrigger', function(padNumber) {
-      self.state.sounds[padNumber].play();
+    sockets.on('drumPadTrigger', function(data) {
+      self.state.sounds[data.padNumber].play(data.time);
     })
 
     sockets.on('new-message', function(message) {
@@ -171,8 +172,8 @@ var Container = React.createClass({
     }
     this.state.sockets.emit('keyboardUp', oscSocketData);
   },
-  drumPadTrigger: function(padNumber) {
-    this.state.sockets.emit('drumPadTrigger', padNumber);
+  drumPadTrigger: function(data) {
+    this.state.sockets.emit('drumPadTrigger', data);
   },
   joinRoom: function(roomName) {
     this.state.sockets.emit('join-room', roomName);
@@ -192,6 +193,8 @@ var Container = React.createClass({
       <ChatContainer joinRoom={ this.joinRoom }
                      sendMessage={ this.sendMessage }
                      messages={ this.state.messages } />
+      <DrumLoop context = { this.state.context }
+                drumPadTrigger={ this.drumPadTrigger }/>
     </div>
   }
 })
