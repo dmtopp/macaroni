@@ -4,8 +4,7 @@ var React           = require('react'),
     sounds          = require('../data/sounds.js'),
     keyboardData    = require('../data/keyboardData.js'),
     InstrumentContainer = require('./03instrument-container.jsx'),
-    ChatContainer   = require('./02chat.jsx'),
-    DrumLoop        = require('./06drum-loop.jsx');
+    ChatContainer   = require('./02chat.jsx');
 
 
 /* 'Global' container component
@@ -187,14 +186,13 @@ var Container = React.createClass({
       <InstrumentContainer  keyboardDown={ this.keyboardDown }
                             keyboardUp={ this.keyboardUp }
                             keyParamsHandler={ this.keyParamsHandler }
-                            drumPadTrigger={ this.drumPadTrigger } />
+                            drumPadTrigger={ this.drumPadTrigger }
+                            context={ this.state.context } />
 
 
       <ChatContainer joinRoom={ this.joinRoom }
                      sendMessage={ this.sendMessage }
                      messages={ this.state.messages } />
-      <DrumLoop context = { this.state.context }
-                drumPadTrigger={ this.drumPadTrigger }/>
     </div>
   }
 })

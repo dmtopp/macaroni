@@ -68,8 +68,8 @@ var DrumLoop = React.createClass({
     }
     return <div className="loop-container">
             { allLoopButtons }
-            <small>Tempo</small>
             { this.state.playing ? <button onClick={ this.playHandler }>Stop</button> : <button onClick={ this.playHandler }>Start</button> }
+            <small>Tempo</small>
             <input type="range"
                    className="keyboardParams"
                    onChange={ this.tempoHandler }

@@ -26466,7 +26466,7 @@ module.exports = [['1.1.01'], ['1.1.50'], ['1.2.01'], ['1.2.50'], ['1.3.01'], ['
 },{}],212:[function(require,module,exports){
 'use strict';
 
-module.exports = [['a', 65], ['s', 83], ['d', 68], ['f', 70], ['j', 74], ['k', 75], ['l', 76], [';', 186]];
+module.exports = [['a', 65], ['s', 83], ['d', 68], ['f', 70], ['j', 74], ['k', 75], ['l', 76], [';', 186], ['\'', 222]];
 
 },{}],213:[function(require,module,exports){
 'use strict';
@@ -26537,6 +26537,9 @@ module.exports = [{
 }, {
   url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409278hat.wav",
   buffer: ''
+}, {
+  url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409276tin.wav",
+  buffer: ''
 }];
 
 },{}],217:[function(require,module,exports){
@@ -26548,8 +26551,7 @@ var React = require('react'),
     sounds = require('../data/sounds.js'),
     keyboardData = require('../data/keyboardData.js'),
     InstrumentContainer = require('./03instrument-container.jsx'),
-    ChatContainer = require('./02chat.jsx'),
-    DrumLoop = require('./06drum-loop.jsx');
+    ChatContainer = require('./02chat.jsx');
 
 /* 'Global' container component
 * =============================================================================
@@ -26732,12 +26734,11 @@ var Container = React.createClass({
       React.createElement(InstrumentContainer, { keyboardDown: this.keyboardDown,
         keyboardUp: this.keyboardUp,
         keyParamsHandler: this.keyParamsHandler,
-        drumPadTrigger: this.drumPadTrigger }),
+        drumPadTrigger: this.drumPadTrigger,
+        context: this.state.context }),
       React.createElement(ChatContainer, { joinRoom: this.joinRoom,
         sendMessage: this.sendMessage,
-        messages: this.state.messages }),
-      React.createElement(DrumLoop, { context: this.state.context,
-        drumPadTrigger: this.drumPadTrigger })
+        messages: this.state.messages })
     );
   }
 });
@@ -26747,7 +26748,7 @@ var Container = React.createClass({
 
 ReactDOM.render(React.createElement(Container, null), document.querySelector('#react-container'));
 
-},{"../data/keyboardData.js":215,"../data/sounds.js":216,"./02chat.jsx":218,"./03instrument-container.jsx":219,"./06drum-loop.jsx":222,"react":194,"react-addons-css-transition-group":50,"react-dom":51}],218:[function(require,module,exports){
+},{"../data/keyboardData.js":215,"../data/sounds.js":216,"./02chat.jsx":218,"./03instrument-container.jsx":219,"react":194,"react-addons-css-transition-group":50,"react-dom":51}],218:[function(require,module,exports){
 'use strict';
 
 var React = require('react'),
@@ -26853,7 +26854,8 @@ module.exports = ChatContainer;
 var React = require('react'),
     ReactTransition = require('react-addons-css-transition-group'),
     Keyboard = require('./04keyboard.jsx'),
-    DrumMachine = require('./05drum-machine.jsx');
+    DrumMachine = require('./05drum-machine.jsx'),
+    DrumLoop = require('./06drum-loop.jsx');
 
 /* Instrument container component
 * =============================================================================
@@ -26865,12 +26867,13 @@ var InstrumentContainer = React.createClass({
 
   getInitialState: function getInitialState() {
     return {
-      showKeyboard: true
+      instrumentToDisplay: 0
     };
   },
-  switchInstruments: function switchInstruments() {
+  switchInstruments: function switchInstruments(e) {
     var state = this.state;
-    state.showKeyboard = !this.state.showKeyboard;
+    state.instrumentToDisplay += parseInt(e.target.value);
+    console.log(Math.abs(state.instrumentToDisplay));
     this.setState(state);
   },
   render: function render() {
@@ -26880,14 +26883,22 @@ var InstrumentContainer = React.createClass({
       React.createElement(
         ReactTransition,
         { transitionName: 'instrument', transitionEnterTimeout: 500, transitionLeaveTimeout: 300 },
-        this.state.showKeyboard ? React.createElement(Keyboard, { keyboardDown: this.props.keyboardDown,
+        this.state.instrumentToDisplay % 3 === 0 ? React.createElement(Keyboard, { keyboardDown: this.props.keyboardDown,
           keyboardUp: this.props.keyboardUp,
-          keyParamsHandler: this.props.keyParamsHandler }) : React.createElement(DrumMachine, { drumPadTrigger: this.props.drumPadTrigger })
+          keyParamsHandler: this.props.keyParamsHandler }) : null,
+        Math.abs(this.state.instrumentToDisplay) % 3 === 1 ? React.createElement(DrumMachine, { drumPadTrigger: this.props.drumPadTrigger }) : null,
+        Math.abs(this.state.instrumentToDisplay) % 3 === 2 ? React.createElement(DrumLoop, { context: this.props.context,
+          drumPadTrigger: this.props.drumPadTrigger }) : null
       ),
       React.createElement(
         'button',
-        { type: 'button', onClick: this.switchInstruments },
-        this.state.showKeyboard ? 'Drums' : 'Keyboard'
+        { type: 'button', onClick: this.switchInstruments, value: '1' },
+        'Prev'
+      ),
+      React.createElement(
+        'button',
+        { type: 'button', onClick: this.switchInstruments, value: '-1' },
+        'Next'
       )
     );
   }
@@ -26897,7 +26908,7 @@ var InstrumentContainer = React.createClass({
 * ============================================================================= */
 module.exports = InstrumentContainer;
 
-},{"./04keyboard.jsx":220,"./05drum-machine.jsx":221,"react":194,"react-addons-css-transition-group":50}],220:[function(require,module,exports){
+},{"./04keyboard.jsx":220,"./05drum-machine.jsx":221,"./06drum-loop.jsx":222,"react":194,"react-addons-css-transition-group":50}],220:[function(require,module,exports){
 'use strict';
 
 var React = require('react'),
@@ -27116,7 +27127,11 @@ var DrumMachine = React.createClass({
     var self = this;
     var keyCodes = require('../data/keyCodesDrumPad.js');
     var pads = keyCodes.map(function (key, i) {
-      return React.createElement(DrumPad, { myLetter: key[0], myKey: key[1], key: i, padNumber: i, drumPadTrigger: self.props.drumPadTrigger });
+      return React.createElement(DrumPad, { myLetter: key[0],
+        myKey: key[1],
+        key: i,
+        padNumber: i,
+        drumPadTrigger: self.props.drumPadTrigger });
     });
     return React.createElement(
       'div',
@@ -27131,8 +27146,7 @@ var DrumPad = React.createClass({
 
   getInitialState: function getInitialState() {
     return {
-      className: 'drumPad',
-      loop: false
+      className: 'drumPad'
     };
   },
   componentDidMount: function componentDidMount() {
@@ -27161,11 +27175,6 @@ var DrumPad = React.createClass({
       this.setState(state);
     }
   },
-  loopToggle: function loopToggle() {
-    var state = this.state;
-    state.loop = !this.state.loop;
-    this.setState(state);
-  },
   render: function render() {
     return React.createElement(
       'div',
@@ -27174,15 +27183,6 @@ var DrumPad = React.createClass({
         'div',
         { className: this.state.className },
         this.props.myLetter.toUpperCase()
-      ),
-      this.state.loop ? React.createElement(
-        'div',
-        { className: 'loop-toggle pressed', onClick: this.loopToggle },
-        'Loop'
-      ) : React.createElement(
-        'div',
-        { className: 'loop-toggle', onClick: this.loopToggle },
-        'Loop'
       )
     );
   }
@@ -27269,11 +27269,6 @@ var DrumLoop = React.createClass({
       'div',
       { className: 'loop-container' },
       allLoopButtons,
-      React.createElement(
-        'small',
-        null,
-        'Tempo'
-      ),
       this.state.playing ? React.createElement(
         'button',
         { onClick: this.playHandler },
@@ -27282,6 +27277,11 @@ var DrumLoop = React.createClass({
         'button',
         { onClick: this.playHandler },
         'Start'
+      ),
+      React.createElement(
+        'small',
+        null,
+        'Tempo'
       ),
       React.createElement('input', { type: 'range',
         className: 'keyboardParams',

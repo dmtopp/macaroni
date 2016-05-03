@@ -17,7 +17,11 @@ var DrumMachine = React.createClass({
     var self = this;
     var keyCodes = require('../data/keyCodesDrumPad.js');
     var pads = keyCodes.map(function(key, i) {
-      return <DrumPad myLetter={ key[0] } myKey={ key[1] } key={ i } padNumber={ i } drumPadTrigger={ self.props.drumPadTrigger }/>
+      return <DrumPad myLetter={ key[0] }
+                      myKey={ key[1] }
+                      key={ i }
+                      padNumber={ i }
+                      drumPadTrigger={ self.props.drumPadTrigger }/>
     })
     return (<div className='drum-machine-container'>
       { pads }
@@ -28,8 +32,7 @@ var DrumMachine = React.createClass({
 var DrumPad = React.createClass({
   getInitialState: function() {
     return {
-      className: 'drumPad',
-      loop: false
+      className: 'drumPad'
     }
   },
   componentDidMount: function() {
@@ -58,19 +61,12 @@ var DrumPad = React.createClass({
       this.setState(state);
     }
   },
-  loopToggle: function() {
-    var state = this.state;
-    state.loop = !this.state.loop;
-    this.setState(state);
-  },
   render: function() {
     return (
-      <div className="pad-container">
+      <div className='pad-container'>
         <div className={ this.state.className }>
           { this.props.myLetter.toUpperCase() }
         </div>
-        { this.state.loop ? <div className="loop-toggle pressed" onClick={ this.loopToggle }>Loop</div>
-                          : <div className="loop-toggle" onClick={ this.loopToggle }>Loop</div> }
 
       </div> )
 
