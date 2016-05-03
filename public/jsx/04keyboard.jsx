@@ -40,31 +40,23 @@ var Keyboard = React.createClass({
                   keyboardUp={ self.props.keyboardUp } />
     })
 
-    var sliderParamNames = [['attack', 'Attack'],
-                            ['release', 'Release'],
-                            ['filterCutoff', 'Filter Cutoff'],
-                            ['osc1Detune', 'Oscillator 1 Detune'],
-                            ['osc2Detune', 'Oscillator 2 Detune']];
+    var paramData = require('../data/keyParamsData.js');
 
-    var selectParamNames = [['osc1', 'Oscillator 1'],
-                            ['osc2', 'Oscillator 2'],
-                            ['filterType', 'Filter Type']]
 
-    var oscOptions = [['square', 'Square'],
-                      ['sine', 'Sine'],
-                      ['triangle', 'Triange'],
-                      ['sawtooth', 'Sawtooth']];
-
-    var selectOscOptions = oscOptions.map(function(option, i) {
-      return <option value={ option[0] } key={ i }>{ option[1] }</option>
+    var paramSelectors = paramData.selectors.map(function(parameter, i) {
+      return <KeyParamSelector key={ i }
+                               name={ parameter.name }
+                               labelName={ parameter.labelName }
+                               options={ parameter.options }
+                               optionsNames={ parameter.optionsNames }
+                               keyParamsHandler={ self.props.keyParamsHandler } />
     })
 
-    var paramSelectors = selectParamNames.map(function(paramName, i) {
-      return <KeyParamSelector key={ i } name={ paramName[0] } labelName={ paramName[1] } options={ selectOscOptions }/>
-    })
-
-    var paramSliders = sliderParamNames.map(function(paramName, i) {
-      return <KeyParamSlider key={ i } name={ paramName[0] } labelName={ paramName[1] } />
+    var paramSliders = paramData.sliders.map(function(paramName, i) {
+      return <KeyParamSlider key={ i }
+                             name={ paramName.name }
+                             labelName={ paramName.labelName }
+                             keyParamsHandler={ self.props.keyParamsHandler }/>
     })
 
 
@@ -73,13 +65,6 @@ var Keyboard = React.createClass({
       <div className='keyboardContainer'>
         { keys }
         { paramSelectors }
-
-        <select className="keyboardParams" name="filterType" onChange={ this.props.keyParamsHandler }>
-          <option value="lowpass">Lowpass</option>
-          <option value="highpass">Highpass</option>
-          <option value="bandpass">Bandpass</option>
-        </select>
-
         { paramSliders }
       </div>
     )
@@ -147,13 +132,18 @@ var KeyParamSlider = React.createClass({
 
 var KeyParamSelector = React.createClass({
   render: function() {
+    var self = this;
+    var options = this.props.options.map(function(option, i) {
+      return <option value={ option } key={ i }>{ self.props.optionsNames[i] }</option>
+    })
+
     return(
       <div>
         <small>{ this.props.labelName }</small>
         <select className="keyboardParams"
                 name={ this.props.name }
                 onChange={ this.props.keyParamsHandler }>
-          { this.props.options }
+          { options }
         </select>
       </div>
     )

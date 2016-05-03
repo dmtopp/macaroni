@@ -20205,6 +20205,29 @@ module.exports = [['a', 65], ['w', 87], ['s', 83], ['e', 69], ['d', 68], ['f', 7
 'use strict';
 
 module.exports = {
+  selectors: [{ name: 'osc1',
+    labelName: 'Oscillator 1',
+    optionsNames: ['Square', 'Sine', 'Triangle', 'Sawtooth'],
+    options: ['square', 'sine', 'triangle', 'sawtooth'] }, { name: 'osc2',
+    labelName: 'Oscillator 2',
+    optionsNames: ['Square', 'Sine', 'Triangle', 'Sawtooth'],
+    options: ['square', 'sine', 'triangle', 'sawtooth'] }, { name: 'filterType',
+    labelName: 'Filter Type',
+    optionsNames: ['Lowpass', 'Highpass', 'Bandpass'],
+    options: ['lowpass', 'highpass', 'bandpass'] }],
+  sliders: [{ name: 'attack',
+    labelName: 'Attack' }, { name: 'release',
+    labelName: 'Release' }, { name: 'filterCutoff',
+    labelName: 'Filter Cutoff' }, { name: 'osc1Detune',
+    labelName: 'Oscillator 1 Detune' }, { name: 'osc2Detune',
+    labelName: 'Oscillator 2 Detune' }]
+
+};
+
+},{}],178:[function(require,module,exports){
+'use strict';
+
+module.exports = {
   osc1: 'square',
   osc2: 'triangle',
   attack: 0.001,
@@ -20215,7 +20238,7 @@ module.exports = {
   osc2Detune: 5
 };
 
-},{}],178:[function(require,module,exports){
+},{}],179:[function(require,module,exports){
 "use strict";
 
 module.exports = [{
@@ -20244,7 +20267,7 @@ module.exports = [{
   buffer: ''
 }];
 
-},{}],179:[function(require,module,exports){
+},{}],180:[function(require,module,exports){
 'use strict';
 
 var React = require('react'),
@@ -20449,7 +20472,7 @@ var Container = React.createClass({
 
 ReactDOM.render(React.createElement(Container, null), document.querySelector('#react-container'));
 
-},{"../data/keyboardData.js":177,"../data/sounds.js":178,"./02chat.jsx":180,"./03instrument-container.jsx":181,"react":174,"react-addons-css-transition-group":30,"react-dom":31}],180:[function(require,module,exports){
+},{"../data/keyboardData.js":178,"../data/sounds.js":179,"./02chat.jsx":181,"./03instrument-container.jsx":182,"react":174,"react-addons-css-transition-group":30,"react-dom":31}],181:[function(require,module,exports){
 'use strict';
 
 var React = require('react'),
@@ -20549,7 +20572,7 @@ var Message = React.createClass({
 
 module.exports = ChatContainer;
 
-},{"react":174,"react-addons-css-transition-group":30}],181:[function(require,module,exports){
+},{"react":174,"react-addons-css-transition-group":30}],182:[function(require,module,exports){
 'use strict';
 
 var React = require('react'),
@@ -20599,7 +20622,7 @@ var InstrumentContainer = React.createClass({
 * ============================================================================= */
 module.exports = InstrumentContainer;
 
-},{"./04keyboard.jsx":182,"./05drum-machine.jsx":183,"react":174,"react-addons-css-transition-group":30}],182:[function(require,module,exports){
+},{"./04keyboard.jsx":183,"./05drum-machine.jsx":184,"react":174,"react-addons-css-transition-group":30}],183:[function(require,module,exports){
 'use strict';
 
 var React = require('react'),
@@ -20646,26 +20669,22 @@ var Keyboard = React.createClass({
         keyboardUp: self.props.keyboardUp });
     });
 
-    var sliderParamNames = [['attack', 'Attack'], ['release', 'Release'], ['filterCutoff', 'Filter Cutoff'], ['osc1Detune', 'Oscillator 1 Detune'], ['osc2Detune', 'Oscillator 2 Detune']];
+    var paramData = require('../data/keyParamsData.js');
 
-    var selectParamNames = [['osc1', 'Oscillator 1'], ['osc2', 'Oscillator 2'], ['filterType', 'Filter Type']];
-
-    var oscOptions = [['square', 'Square'], ['sine', 'Sine'], ['triangle', 'Triange'], ['sawtooth', 'Sawtooth']];
-
-    var selectOscOptions = oscOptions.map(function (option, i) {
-      return React.createElement(
-        'option',
-        { value: option[0], key: i },
-        option[1]
-      );
+    var paramSelectors = paramData.selectors.map(function (parameter, i) {
+      return React.createElement(KeyParamSelector, { key: i,
+        name: parameter.name,
+        labelName: parameter.labelName,
+        options: parameter.options,
+        optionsNames: parameter.optionsNames,
+        keyParamsHandler: self.props.keyParamsHandler });
     });
 
-    var paramSelectors = selectParamNames.map(function (paramName, i) {
-      return React.createElement(KeyParamSelector, { key: i, name: paramName[0], labelName: paramName[1], options: selectOscOptions });
-    });
-
-    var paramSliders = sliderParamNames.map(function (paramName, i) {
-      return React.createElement(KeyParamSlider, { key: i, name: paramName[0], labelName: paramName[1] });
+    var paramSliders = paramData.sliders.map(function (paramName, i) {
+      return React.createElement(KeyParamSlider, { key: i,
+        name: paramName.name,
+        labelName: paramName.labelName,
+        keyParamsHandler: self.props.keyParamsHandler });
     });
 
     return React.createElement(
@@ -20673,25 +20692,6 @@ var Keyboard = React.createClass({
       { className: 'keyboardContainer' },
       keys,
       paramSelectors,
-      React.createElement(
-        'select',
-        { className: 'keyboardParams', name: 'filterType', onChange: this.props.keyParamsHandler },
-        React.createElement(
-          'option',
-          { value: 'lowpass' },
-          'Lowpass'
-        ),
-        React.createElement(
-          'option',
-          { value: 'highpass' },
-          'Highpass'
-        ),
-        React.createElement(
-          'option',
-          { value: 'bandpass' },
-          'Bandpass'
-        )
-      ),
       paramSliders
     );
   }
@@ -20769,6 +20769,15 @@ var KeyParamSelector = React.createClass({
   displayName: 'KeyParamSelector',
 
   render: function render() {
+    var self = this;
+    var options = this.props.options.map(function (option, i) {
+      return React.createElement(
+        'option',
+        { value: option, key: i },
+        self.props.optionsNames[i]
+      );
+    });
+
     return React.createElement(
       'div',
       null,
@@ -20782,7 +20791,7 @@ var KeyParamSelector = React.createClass({
         { className: 'keyboardParams',
           name: this.props.name,
           onChange: this.props.keyParamsHandler },
-        this.props.options
+        options
       )
     );
   }
@@ -20793,7 +20802,7 @@ var KeyParamSelector = React.createClass({
 
 module.exports = Keyboard;
 
-},{"../data/keyCodesKeyboard.js":176,"react":174,"react-addons-css-transition-group":30}],183:[function(require,module,exports){
+},{"../data/keyCodesKeyboard.js":176,"../data/keyParamsData.js":177,"react":174,"react-addons-css-transition-group":30}],184:[function(require,module,exports){
 'use strict';
 
 var React = require('react'),
@@ -20897,4 +20906,4 @@ var DrumPad = React.createClass({
 
 module.exports = DrumMachine;
 
-},{"../data/keyCodesDrumPad.js":175,"react":174,"react-addons-css-transition-group":30}]},{},[179]);
+},{"../data/keyCodesDrumPad.js":175,"react":174,"react-addons-css-transition-group":30}]},{},[180]);
