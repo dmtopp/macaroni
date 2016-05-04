@@ -1,3 +1,167 @@
+@light-grey: rgba(0,0,0,0.1);
+@grey: rgba(0,0,0,0.7);
+@primary-color: rgba(0,0,0,0.7);
+@secondary-color: rgba(254, 234, 255, 0.5);
+@text-size: 12px;
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  height: 100%;
+  background-image: url('../../images/background.png');
+  font-family: 'Merriweather Sans', sans-serif;
+  display: flex;
+  align-items: center;
+}
+
+.container {
+  width: 100%;
+  background-color: @secondary-color;
+  padding: 10px;
+}
+
+div {
+  display: block;
+}
+
+button {
+  padding: 10px;
+  border-radius: 2px;
+  margin-left: 4px;
+  margin-right: 4px;
+}
+
+.logout {
+  float: right;
+}
+
+#chat {
+
+  border-radius: 3px;
+  border: 1px solid @grey;
+  height: 250px;
+  overflow-y: scroll;
+
+  p{
+    padding: 4px;
+    margin: 0;
+  }
+
+  p:nth-child(2n) {
+    background-color: @light-grey;
+  }
+  p:nth-child(2n + 1) {
+  }
+}
+
+select {
+  height: 25px;
+  font-size: 12px;
+  border-radius: 0;
+  -webkit-appearance: none;
+  padding: 0 4px;
+  margin: 3px 5px;
+  text-align: center;
+}
+
+// -------------- slider styling --------------
+@track-color: #424242;
+@thumb-color: #555bc8;
+
+@thumb-height: 15px;
+@thumb-width: 8px;
+@thumb-border-width: 1px;
+
+@track-width: 100px;
+@track-height: 5px;
+@track-border-width: 1px;
+@track-border-color: black;
+
+@contrast: 5%;
+
+.track() {
+  width: @track-width;
+  height: @track-height;
+  cursor: pointer;
+  animate: 0.2s;
+}
+
+.thumb() {
+  border: @thumb-border-width solid @grey;
+  height: @thumb-height;
+  width: @thumb-width;
+  background: @thumb-color;
+  cursor: pointer;
+}
+
+input[type=range] {
+  -webkit-appearance: none;
+  margin: @thumb-height/2 0;
+  width: @track-width;
+
+  &:focus {
+    outline: none;
+  }
+
+  &::-webkit-slider-runnable-track {
+    .track();
+    background: @track-color;
+    border: @track-border-width solid @grey;
+  }
+
+  &::-webkit-slider-thumb {
+    .thumb();
+    -webkit-appearance: none;
+    margin-top: ((-@track-border-width * 2 + @track-height) / 2) - (@thumb-height / 2);
+  }
+
+  &:focus::-webkit-slider-runnable-track {
+    background: lighten(@track-color, @contrast);
+  }
+
+  &::-moz-range-track {
+    .track();
+    background: @track-color;
+    border: @track-border-width solid @grey;
+  }
+  &::-moz-range-thumb {
+     .thumb();
+  }
+
+  &::-ms-track {
+    .track();
+    background: transparent;
+    border-color: transparent;
+    border-width: @thumb-width 0;
+    color: transparent;
+  }
+
+  &::-ms-fill-lower {
+    background: darken(@track-color, @contrast);
+    border: @track-border-width solid @grey;
+  }
+  &::-ms-fill-upper {
+    background: @track-color;
+    border: @track-border-width solid @grey;
+  }
+  &::-ms-thumb {
+    .thumb();
+  }
+  &:focus::-ms-fill-lower {
+    background: @track-color;
+  }
+  &:focus::-ms-fill-upper {
+    background: lighten(@track-color, @contrast);
+  }
+}
+
+// -------------- end slider styling --------------
+
 // -------------- keyboard styling --------------
 .whiteKey {
   height: 250px;
@@ -26,7 +190,7 @@
 }
 
 .keyboardParams {
-  // display: block;
+  display: inline-block;
 }
 
 .keyboardContainer {

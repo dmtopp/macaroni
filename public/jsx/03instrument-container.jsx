@@ -23,22 +23,24 @@ var InstrumentContainer = React.createClass({
   },
   render: function() {
     return (
-      <div className="instrument-container">
-        <ReactTransition transitionName="instrument" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
 
-          { this.state.instrumentToDisplay % 3 === 0 ? <Keyboard keyboardDown={ this.props.keyboardDown }
-                                                                 keyboardUp={ this.props.keyboardUp }
-                                                                 keyParamsHandler={ this.props.keyParamsHandler } /> : null }
+        <div className="eight columns">
+          <ReactTransition transitionName="instrument" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
 
-          { Math.abs(this.state.instrumentToDisplay) % 3 === 1 ? <DrumMachine drumPadTrigger={ this.props.drumPadTrigger }/> : null }
+            { this.state.instrumentToDisplay % 3 === 0 ? <Keyboard keyboardDown={ this.props.keyboardDown }
+                                                                   keyboardUp={ this.props.keyboardUp }
+                                                                   keyParamsHandler={ this.props.keyParamsHandler } /> : null }
 
-          { Math.abs(this.state.instrumentToDisplay) % 3 === 2 ? <DrumLoop context = { this.props.context }
-                                                                 drumPadTrigger={ this.props.drumPadTrigger }/> : null }
+            { Math.abs(this.state.instrumentToDisplay) % 3 === 1 ? <DrumMachine drumPadTrigger={ this.props.drumPadTrigger }/> : null }
 
-        </ReactTransition>
-        <button type="button" onClick={ this.switchInstruments } value="1">Prev</button>
-        <button type="button" onClick={ this.switchInstruments } value="-1">Next</button>
-      </div>
+            { Math.abs(this.state.instrumentToDisplay) % 3 === 2 ? <DrumLoop context = { this.props.context }
+                                                                   drumPadTrigger={ this.props.drumPadTrigger }/> : null }
+
+          </ReactTransition>
+          <button type="button" onClick={ this.switchInstruments } value="1">Prev</button>
+          <button type="button" onClick={ this.switchInstruments } value="-1">Next</button>
+        </div>
+
     )
   }
 })

@@ -26572,6 +26572,7 @@ var Container = React.createClass({
 
     return {
       isAuthenticated: false,
+      userName: 'Mysterious Stranger',
       displayLogin: false,
       sockets: io.connect(),
       context: context,
@@ -26725,30 +26726,25 @@ var Container = React.createClass({
   },
   joinRoom: function joinRoom(roomName) {
     this.state.sockets.emit('join-room', roomName);
-    this.sendMessage('You have joined ' + roomName);
+    this.sendMessage({
+      text: 'You have joined ' + roomName,
+      username: 'Macaroni'
+    });
   },
   sendMessage: function sendMessage(data) {
     this.state.sockets.emit('send-message', data);
   },
-  // right now all that logging in does is store a username in the browser's memory.
-  // if more features were added that required restricted access, the following methods
-  // would have to be changed to something secure.
   handleLogin: function handleLogin(data) {
     var state = this.state;
     state.isAuthenticated = true;
+    state.userName = data.username;
     this.setState(state);
-    sessionStorage.setItem('logged_in', true);
-    sessionStorage.setItem('username', data.username);
-    console.log(sessionStorage);
   },
   handleLogout: function handleLogout(data) {
     var state = this.state;
     state.isAuthenticated = false;
+    state.username = 'Mysterious Stranger';
     this.setState(state);
-    console.log('logout');
-    sessionStorage.setItem('logged_in', false);
-    sessionStorage.setItem('username', '');
-    console.log(sessionStorage);
   },
   changeToLogin: function changeToLogin() {
     var state = this.state;
@@ -26758,7 +26754,7 @@ var Container = React.createClass({
   render: function render() {
     var main = React.createElement(
       'div',
-      null,
+      { className: 'row' },
       React.createElement(InstrumentContainer, { keyboardDown: this.keyboardDown,
         keyboardUp: this.keyboardUp,
         keyParamsHandler: this.keyParamsHandler,
@@ -26766,7 +26762,8 @@ var Container = React.createClass({
         context: this.state.context }),
       React.createElement(ChatContainer, { joinRoom: this.joinRoom,
         sendMessage: this.sendMessage,
-        messages: this.state.messages }),
+        messages: this.state.messages,
+        username: this.props.username }),
       React.createElement(
         'button',
         { onClick: this.changeToLogin },
@@ -26782,7 +26779,7 @@ var Container = React.createClass({
       null,
       this.state.isAuthenticated ? React.createElement(
         'button',
-        { onClick: this.handleLogout },
+        { className: 'logout', onClick: this.handleLogout },
         'Logout'
       ) : null,
       this.state.displayLogin ? React.createElement(
@@ -26842,7 +26839,7 @@ var ChatContainer = React.createClass({
       state.message = '';
       this.setState(state);
       var messageData = {
-        username: sessionStorage.username || 'Mysterious Stranger',
+        username: this.props.username || 'Mysterious Stranger',
         text: text
       };
       this.props.sendMessage(messageData);
@@ -26862,7 +26859,7 @@ var ChatContainer = React.createClass({
     });
     return React.createElement(
       'div',
-      null,
+      { className: 'four columns' },
       React.createElement(
         'section',
         { id: 'chat' },
@@ -26937,7 +26934,7 @@ var InstrumentContainer = React.createClass({
   render: function render() {
     return React.createElement(
       'div',
-      { className: 'instrument-container' },
+      { className: 'eight columns' },
       React.createElement(
         ReactTransition,
         { transitionName: 'instrument', transitionEnterTimeout: 500, transitionLeaveTimeout: 300 },
@@ -27036,22 +27033,41 @@ var Keyboard = React.createClass({
         labelName: paramName.labelName,
         keyParamsHandler: self.props.keyParamsHandler });
     });
-
     return React.createElement(
       'div',
-      { className: 'keyboardContainer' },
-      keys,
-      paramSelectors,
-      paramSliders,
+      null,
       React.createElement(
-        'button',
-        { onClick: this.changeOctave, value: '1' },
-        '+'
+        'div',
+        { className: 'row' },
+        keys
       ),
       React.createElement(
-        'button',
-        { onClick: this.changeOctave, value: '-1' },
-        '-'
+        'div',
+        { className: 'row' },
+        React.createElement(
+          'div',
+          { className: 'four columns' },
+          paramSelectors
+        ),
+        React.createElement(
+          'div',
+          { className: 'five columns' },
+          paramSliders
+        ),
+        React.createElement(
+          'div',
+          { className: 'three columns' },
+          React.createElement(
+            'button',
+            { onClick: this.changeOctave, value: '1' },
+            '+'
+          ),
+          React.createElement(
+            'button',
+            { onClick: this.changeOctave, value: '-1' },
+            '-'
+          )
+        )
       )
     );
   }

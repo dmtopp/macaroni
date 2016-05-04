@@ -64,16 +64,23 @@ var Keyboard = React.createClass({
                              labelName={ paramName.labelName }
                              keyParamsHandler={ self.props.keyParamsHandler }/>
     })
-
-
     return (
-
-      <div className='keyboardContainer'>
-        { keys }
-        { paramSelectors }
-        { paramSliders }
-        <button onClick={ this.changeOctave } value="1">+</button>
-        <button onClick={ this.changeOctave } value="-1">-</button>
+      <div>
+        <div className='row'>
+          { keys }
+        </div>
+        <div className='row'>
+          <div className='four columns'>
+            { paramSelectors }
+          </div>
+          <div className='five columns'>
+            { paramSliders }
+          </div>
+          <div className='three columns'>
+            <button onClick={ this.changeOctave } value="1">+</button>
+            <button onClick={ this.changeOctave } value="-1">-</button>
+          </div>
+        </div>
       </div>
     )
   }

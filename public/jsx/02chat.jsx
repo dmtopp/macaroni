@@ -52,7 +52,7 @@ var ChatContainer = React.createClass({
     var messages = this.props.messages.map(function(message, i) {
       return <Message text={ message } key={ i } />
     })
-    return <div>
+    return <div className="four columns">
       <section id="chat">
         { messages }
       </section>

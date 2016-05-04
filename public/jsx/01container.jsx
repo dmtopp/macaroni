@@ -180,7 +180,10 @@ var Container = React.createClass({
   },
   joinRoom: function(roomName) {
     this.state.sockets.emit('join-room', roomName);
-    this.sendMessage('You have joined ' + roomName);
+    this.sendMessage({
+      text: 'You have joined ' + roomName,
+      username: 'Macaroni'
+    });
   },
   sendMessage: function(data) {
     this.state.sockets.emit('send-message', data);
@@ -203,7 +206,7 @@ var Container = React.createClass({
     this.setState(state);
   },
   render: function() {
-    var main = <div><InstrumentContainer  keyboardDown={ this.keyboardDown }
+    var main = <div className='row'><InstrumentContainer  keyboardDown={ this.keyboardDown }
                           keyboardUp={ this.keyboardUp }
                           keyParamsHandler={ this.keyParamsHandler }
                           drumPadTrigger={ this.drumPadTrigger }
@@ -218,7 +221,7 @@ var Container = React.createClass({
                                changeToLogout={ this.changeToLogin }/>
 
     return <div>
-      { this.state.isAuthenticated ? <button onClick={ this.handleLogout }>Logout</button> : null }
+      { this.state.isAuthenticated ? <button className="logout" onClick={ this.handleLogout }>Logout</button> : null }
       { this.state.displayLogin ? <div>{ login }</div> : <div>{ main }</div> }
 
 
