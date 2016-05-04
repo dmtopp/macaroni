@@ -33,7 +33,11 @@ var ChatContainer = React.createClass({
       var state = this.state;
       state.message = '';
       this.setState(state);
-      this.props.sendMessage(text);
+      var messageData = {
+        username: this.props.username || 'Mysterious Stranger',
+        text: text
+      }
+      this.props.sendMessage(messageData);
     }
   },
   joinRoom: function() {

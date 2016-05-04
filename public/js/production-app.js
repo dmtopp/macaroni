@@ -26572,6 +26572,7 @@ var Container = React.createClass({
 
     return {
       isAuthenticated: false,
+      displayLogin: false,
       sockets: io.connect(),
       context: context,
       masterVolume: masterVolume,
@@ -26630,9 +26631,9 @@ var Container = React.createClass({
       self.state.sounds[data.padNumber].play(data.time);
     });
 
-    sockets.on('new-message', function (message) {
+    sockets.on('new-message', function (messageData) {
       var state = self.state;
-      state.messages.push(message);
+      state.messages.push(messageData.username + ': ' + messageData.text);
       self.setState(state);
     });
   },
@@ -26726,11 +26727,36 @@ var Container = React.createClass({
     this.state.sockets.emit('join-room', roomName);
     this.sendMessage('You have joined ' + roomName);
   },
-  sendMessage: function sendMessage(text) {
-    this.state.sockets.emit('send-message', text);
+  sendMessage: function sendMessage(data) {
+    this.state.sockets.emit('send-message', data);
+  },
+  // right now all that logging in does is store a username in the browser's memory.
+  // if more features were added that required restricted access, the following methods
+  // would have to be changed to something secure.
+  handleLogin: function handleLogin(data) {
+    var state = this.state;
+    state.isAuthenticated = true;
+    this.setState(state);
+    sessionStorage.setItem('logged_in', true);
+    sessionStorage.setItem('username', data.username);
+    console.log(sessionStorage);
+  },
+  handleLogout: function handleLogout(data) {
+    var state = this.state;
+    state.isAuthenticated = false;
+    this.setState(state);
+    console.log('logout');
+    sessionStorage.setItem('logged_in', false);
+    sessionStorage.setItem('username', '');
+    console.log(sessionStorage);
+  },
+  changeToLogin: function changeToLogin() {
+    var state = this.state;
+    state.displayLogin = !state.displayLogin;
+    this.setState(state);
   },
   render: function render() {
-    return React.createElement(
+    var main = React.createElement(
       'div',
       null,
       React.createElement(InstrumentContainer, { keyboardDown: this.keyboardDown,
@@ -26741,7 +26767,33 @@ var Container = React.createClass({
       React.createElement(ChatContainer, { joinRoom: this.joinRoom,
         sendMessage: this.sendMessage,
         messages: this.state.messages }),
-      React.createElement(LoginRegister, null)
+      React.createElement(
+        'button',
+        { onClick: this.changeToLogin },
+        'Log In'
+      )
+    );
+
+    var login = React.createElement(LoginRegister, { handleLogin: this.handleLogin,
+      changeToLogout: this.changeToLogin });
+
+    return React.createElement(
+      'div',
+      null,
+      this.state.isAuthenticated ? React.createElement(
+        'button',
+        { onClick: this.handleLogout },
+        'Logout'
+      ) : null,
+      this.state.displayLogin ? React.createElement(
+        'div',
+        null,
+        login
+      ) : React.createElement(
+        'div',
+        null,
+        main
+      )
     );
   }
 });
@@ -26789,7 +26841,11 @@ var ChatContainer = React.createClass({
       var state = this.state;
       state.message = '';
       this.setState(state);
-      this.props.sendMessage(text);
+      var messageData = {
+        username: sessionStorage.username || 'Mysterious Stranger',
+        text: text
+      };
+      this.props.sendMessage(messageData);
     }
   },
   joinRoom: function joinRoom() {
@@ -27348,7 +27404,6 @@ var LoginSignup = React.createClass({
   },
   handleSubmit: function handleSubmit(e) {
     e.preventDefault();
-    console.log(e.target.value);
     var path = e.target.value;
     var state = this.state;
     var request = new XMLHttpRequest();
@@ -27356,6 +27411,9 @@ var LoginSignup = React.createClass({
 
     if (path === '/register' && (!state.newUsername || !state.newPassword || !state.confirmPassword)) {
       state.message = 'Please fill out all three fields to register a new user.';
+      this.setState(state);
+    } else if (path === '/register' && state.newPassword != state.confirmPassword) {
+      state.message = 'Passwords do not match!';
       this.setState(state);
     } else if (path === '/login' && (!state.username || !state.password)) {
       state.message = 'Please enter both username and password to log in.';
@@ -27366,9 +27424,15 @@ var LoginSignup = React.createClass({
 
       request.onreadystatechange = function () {
         if (request.readyState == 4 && request.status == 200) {
-          state.message = JSON.parse(request.responseText).message;
-          self.setState(state);
-          console.log(request.responseText.message);
+          var responseData = JSON.parse(request.responseText);
+
+          state.message = responseData.message;
+          if (responseData.username) {
+            self.props.handleLogin(responseData);
+            self.props.changeToLogout();
+          } else {
+            self.setState(state);
+          }
         }
       };
       request.send(JSON.stringify(state));
@@ -27383,6 +27447,11 @@ var LoginSignup = React.createClass({
     return React.createElement(
       'div',
       null,
+      React.createElement(
+        'h2',
+        null,
+        this.state.message
+      ),
       React.createElement(
         'form',
         { className: 'form-container' },
@@ -27405,11 +27474,6 @@ var LoginSignup = React.createClass({
           { onClick: this.handleSubmit, value: '/login' },
           'Submit'
         )
-      ),
-      React.createElement(
-        'h2',
-        null,
-        this.state.message
       )
     );
   }

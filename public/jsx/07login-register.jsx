@@ -14,7 +14,6 @@ var LoginSignup = React.createClass({
   },
   handleSubmit: function(e) {
     e.preventDefault();
-    console.log(e.target.value);
     var path = e.target.value;
     var state = this.state;
     var request = new XMLHttpRequest();
@@ -22,6 +21,9 @@ var LoginSignup = React.createClass({
 
     if (path === '/register' && (!state.newUsername || !state.newPassword || !state.confirmPassword)) {
       state.message = 'Please fill out all three fields to register a new user.';
+      this.setState(state);
+    } else if (path === '/register' && (state.newPassword != state.confirmPassword)){
+      state.message = 'Passwords do not match!';
       this.setState(state);
     } else if (path === '/login' && (!state.username || !state.password)) {
       state.message = 'Please enter both username and password to log in.';
@@ -32,12 +34,17 @@ var LoginSignup = React.createClass({
 
       request.onreadystatechange = function () {
         if (request.readyState == 4 && request.status == 200) {
-          responseData = JSON.parse(request.responseText);
+          var responseData = JSON.parse(request.responseText);
 
           state.message = responseData.message;
-          if (responseDate.username) this.props.handleLogin();
+          if (responseData.username) {
+            self.props.handleLogin(responseData);
+            self.props.changeToLogout();
+          } else {
+            self.setState(state);
+          }
 
-          self.setState(state);
+
         }
       }
       request.send(JSON.stringify(state));
@@ -50,6 +57,7 @@ var LoginSignup = React.createClass({
   },
   render: function() {
     return <div>
+      <h2>{ this.state.message }</h2>
       <form className="form-container">
         <input type='text' name='newUsername' placeholder='Enter a username' onChange={ this.handleChange } />
         <input type='password' name='newPassword' onChange={ this.handleChange } />
@@ -61,7 +69,6 @@ var LoginSignup = React.createClass({
         <input type='password' name='password' onChange={ this.handleChange } />
         <button onClick={ this.handleSubmit } value='/login'>Submit</button>
       </form>
-      <h2>{ this.state.message }</h2>
     </div>
   }
 })

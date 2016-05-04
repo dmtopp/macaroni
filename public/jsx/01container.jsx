@@ -24,6 +24,8 @@ var Container = React.createClass({
 
     return {
       isAuthenticated: false,
+      userName: 'Mysterious Stranger',
+      displayLogin: false,
       sockets: io.connect(),
       context: context,
       masterVolume: masterVolume,
@@ -82,9 +84,9 @@ var Container = React.createClass({
       self.state.sounds[data.padNumber].play(data.time);
     })
 
-    sockets.on('new-message', function(message) {
+    sockets.on('new-message', function(messageData) {
       var state = self.state;
-      state.messages.push(message);
+      state.messages.push(messageData.username + ': ' + messageData.text);
       self.setState(state);
     })
 
@@ -180,27 +182,47 @@ var Container = React.createClass({
     this.state.sockets.emit('join-room', roomName);
     this.sendMessage('You have joined ' + roomName);
   },
-  sendMessage: function(text) {
-    this.state.sockets.emit('send-message', text);
+  sendMessage: function(data) {
+    this.state.sockets.emit('send-message', data);
   },
-  handleLogin: function(name) {
+  handleLogin: function(data) {
     var state = this.state;
     state.isAuthenticated = true;
+    state.userName = data.username;
+    this.setState(state);
+  },
+  handleLogout: function(data) {
+    var state = this.state;
+    state.isAuthenticated = false;
+    state.username = 'Mysterious Stranger';
+    this.setState(state);
+  },
+  changeToLogin: function() {
+    var state = this.state;
+    state.displayLogin = !state.displayLogin;
     this.setState(state);
   },
   render: function() {
+    var main = <div><InstrumentContainer  keyboardDown={ this.keyboardDown }
+                          keyboardUp={ this.keyboardUp }
+                          keyParamsHandler={ this.keyParamsHandler }
+                          drumPadTrigger={ this.drumPadTrigger }
+                          context={ this.state.context } />
+               <ChatContainer joinRoom={ this.joinRoom }
+                              sendMessage={ this.sendMessage }
+                              messages={ this.state.messages }
+                              username={ this.props.username }/>
+               <button onClick={ this.changeToLogin }>Log In</button></div>
+
+    var login = <LoginRegister handleLogin={ this.handleLogin }
+                               changeToLogout={ this.changeToLogin }/>
+
     return <div>
-      <InstrumentContainer  keyboardDown={ this.keyboardDown }
-                            keyboardUp={ this.keyboardUp }
-                            keyParamsHandler={ this.keyParamsHandler }
-                            drumPadTrigger={ this.drumPadTrigger }
-                            context={ this.state.context } />
+      { this.state.isAuthenticated ? <button onClick={ this.handleLogout }>Logout</button> : null }
+      { this.state.displayLogin ? <div>{ login }</div> : <div>{ main }</div> }
 
 
-      <ChatContainer joinRoom={ this.joinRoom }
-                     sendMessage={ this.sendMessage }
-                     messages={ this.state.messages } />
-      <LoginRegister handleLogin={ this.handleLogin }/>
+
     </div>
   }
 })
