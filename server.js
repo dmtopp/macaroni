@@ -1,9 +1,11 @@
 // set up dependencies
 // -------------------
-require('dotenv');
+require('dotenv').config();
 var express    = require('express'),
     bodyParser = require('body-parser'),
     app        = express();
+
+require('./db/database.js');
 
 // configure our public and views folders
 // --------------------------------------
@@ -17,6 +19,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // set up controllers
 // ------------------
+app.use('/users', require('./controllers/users.js'));
+
 app.get('/', function(req, res, next) {
   res.sendFile(__dirname + '/views/index.html');
 })
@@ -26,10 +30,10 @@ app.get('/', function(req, res, next) {
 var server = app.listen(3000, function(){
   console.log('The server is listening on port ' + server.address().port + '!');
 })
-
 var io = require('socket.io').listen(server)
 
 // handlers for socket messages
+// ----------------------------
 io.sockets.on('connection', function(socket){
   socket.on('join-room', function(room){
     if (socket.rooms) socket.rooms = {};

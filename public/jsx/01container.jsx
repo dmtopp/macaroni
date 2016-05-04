@@ -48,6 +48,7 @@ var Container = React.createClass({
     request.send();
   },
   componentDidMount: function() {
+    console.log(Window.sessionStorage);
     var sockets = this.state.sockets,
         keyboardData = this.state.keyboardData,
         self = this,
