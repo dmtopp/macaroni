@@ -23,6 +23,7 @@ var Container = React.createClass({
     masterVolume.connect(context.destination);
 
     return {
+      isAuthenticated: false,
       sockets: io.connect(),
       context: context,
       masterVolume: masterVolume,
@@ -48,7 +49,6 @@ var Container = React.createClass({
     request.send();
   },
   componentDidMount: function() {
-    console.log(Window.sessionStorage);
     var sockets = this.state.sockets,
         keyboardData = this.state.keyboardData,
         self = this,
@@ -183,6 +183,11 @@ var Container = React.createClass({
   sendMessage: function(text) {
     this.state.sockets.emit('send-message', text);
   },
+  handleLogin: function(name) {
+    var state = this.state;
+    state.isAuthenticated = true;
+    this.setState(state);
+  },
   render: function() {
     return <div>
       <InstrumentContainer  keyboardDown={ this.keyboardDown }
@@ -195,7 +200,7 @@ var Container = React.createClass({
       <ChatContainer joinRoom={ this.joinRoom }
                      sendMessage={ this.sendMessage }
                      messages={ this.state.messages } />
-      <LoginRegister />
+      <LoginRegister handleLogin={ this.handleLogin }/>
     </div>
   }
 })

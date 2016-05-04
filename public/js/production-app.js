@@ -26511,29 +26511,6 @@ module.exports = {
 };
 
 },{}],216:[function(require,module,exports){
-'use strict';
-
-module.exports = [{
-  label: 'Username',
-  type: 'text',
-  name: 'username',
-  placeholder: 'Enter a username',
-  text: null
-}, {
-  label: 'Password',
-  type: 'password',
-  name: 'password',
-  placeholder: null,
-  text: null
-}, {
-  label: 'Confirm password',
-  type: 'password',
-  name: 'confirmPassword',
-  placeholder: null,
-  text: null
-}];
-
-},{}],217:[function(require,module,exports){
 "use strict";
 
 module.exports = [{
@@ -26565,7 +26542,7 @@ module.exports = [{
   buffer: ''
 }];
 
-},{}],218:[function(require,module,exports){
+},{}],217:[function(require,module,exports){
 'use strict';
 
 var React = require('react'),
@@ -26594,6 +26571,7 @@ var Container = React.createClass({
     masterVolume.connect(context.destination);
 
     return {
+      isAuthenticated: false,
       sockets: io.connect(),
       context: context,
       masterVolume: masterVolume,
@@ -26619,7 +26597,6 @@ var Container = React.createClass({
     request.send();
   },
   componentDidMount: function componentDidMount() {
-    console.log(Window.sessionStorage);
     var sockets = this.state.sockets,
         keyboardData = this.state.keyboardData,
         self = this,
@@ -26774,7 +26751,7 @@ var Container = React.createClass({
 
 ReactDOM.render(React.createElement(Container, null), document.querySelector('#react-container'));
 
-},{"../data/keyboardData.js":215,"../data/sounds.js":217,"./02chat.jsx":219,"./03instrument-container.jsx":220,"./07login-register.jsx":224,"react":194,"react-addons-css-transition-group":50,"react-dom":51}],219:[function(require,module,exports){
+},{"../data/keyboardData.js":215,"../data/sounds.js":216,"./02chat.jsx":218,"./03instrument-container.jsx":219,"./07login-register.jsx":223,"react":194,"react-addons-css-transition-group":50,"react-dom":51}],218:[function(require,module,exports){
 'use strict';
 
 var React = require('react'),
@@ -26874,7 +26851,7 @@ var Message = React.createClass({
 
 module.exports = ChatContainer;
 
-},{"react":194,"react-addons-css-transition-group":50}],220:[function(require,module,exports){
+},{"react":194,"react-addons-css-transition-group":50}],219:[function(require,module,exports){
 'use strict';
 
 var React = require('react'),
@@ -26933,7 +26910,7 @@ var InstrumentContainer = React.createClass({
 * ============================================================================= */
 module.exports = InstrumentContainer;
 
-},{"./04keyboard.jsx":221,"./05drum-machine.jsx":222,"./06drum-loop.jsx":223,"react":194,"react-addons-css-transition-group":50}],221:[function(require,module,exports){
+},{"./04keyboard.jsx":220,"./05drum-machine.jsx":221,"./06drum-loop.jsx":222,"react":194,"react-addons-css-transition-group":50}],220:[function(require,module,exports){
 'use strict';
 
 var React = require('react'),
@@ -27128,7 +27105,7 @@ var KeyParamSelector = React.createClass({
 
 module.exports = Keyboard;
 
-},{"../data/keyCodesKeyboard.js":213,"../data/keyParamsData.js":214,"react":194,"react-addons-css-transition-group":50}],222:[function(require,module,exports){
+},{"../data/keyCodesKeyboard.js":213,"../data/keyParamsData.js":214,"react":194,"react-addons-css-transition-group":50}],221:[function(require,module,exports){
 'use strict';
 
 var React = require('react'),
@@ -27218,7 +27195,7 @@ var DrumPad = React.createClass({
 
 module.exports = DrumMachine;
 
-},{"../data/keyCodesDrumPad.js":212,"react":194,"react-addons-css-transition-group":50}],223:[function(require,module,exports){
+},{"../data/keyCodesDrumPad.js":212,"react":194,"react-addons-css-transition-group":50}],222:[function(require,module,exports){
 'use strict';
 
 var React = require('react'),
@@ -27350,7 +27327,7 @@ var LoopButton = React.createClass({
 
 module.exports = DrumLoop;
 
-},{"../data/drumMachineData.js":211,"dilla":7,"react":194,"react-addons-css-transition-group":50}],224:[function(require,module,exports){
+},{"../data/drumMachineData.js":211,"dilla":7,"react":194,"react-addons-css-transition-group":50}],223:[function(require,module,exports){
 'use strict';
 
 var React = require('react'),
@@ -27359,75 +27336,80 @@ var React = require('react'),
 var LoginSignup = React.createClass({
   displayName: 'LoginSignup',
 
+  getInitialState: function getInitialState() {
+    return {
+      newUsername: '',
+      newPassword: '',
+      confirmPassword: '',
+      username: '',
+      password: '',
+      message: ''
+    };
+  },
   handleSubmit: function handleSubmit(e) {
+    e.preventDefault();
     console.log(e.target.value);
+    var path = e.target.value;
+    var state = this.state;
+    var request = new XMLHttpRequest();
+    var self = this;
+
+    if (path === '/register' && (!state.newUsername || !state.newPassword || !state.confirmPassword)) {
+      state.message = 'Please fill out all three fields to register a new user.';
+      this.setState(state);
+    } else if (path === '/login' && (!state.username || !state.password)) {
+      state.message = 'Please enter both username and password to log in.';
+      this.setState(state);
+    } else {
+      request.open('POST', '/users' + e.target.value, true);
+      request.setRequestHeader('Content-Type', 'application/json');
+
+      request.onreadystatechange = function () {
+        if (request.readyState == 4 && request.status == 200) {
+          state.message = JSON.parse(request.responseText).message;
+          self.setState(state);
+          console.log(request.responseText.message);
+        }
+      };
+      request.send(JSON.stringify(state));
+    }
+  },
+  handleChange: function handleChange(e) {
+    var state = this.state;
+    state[e.target.name] = e.target.value;
+    this.setState(state);
   },
   render: function render() {
-    var formParams = require('../data/loginParams.js');
-    // console.log(formParams);
-
-    var signup = formParams.map(function (data, i) {
-      return React.createElement(FormField, { key: i,
-        label: data.label,
-        type: data.type,
-        name: data.name,
-        placeholder: data.placeholder });
-    });
-
-    var login = formParams.map(function (data, i) {
-      return React.createElement(FormField, { key: i,
-        label: data.label,
-        type: data.type,
-        name: data.name,
-        placeholder: data.placeholder });
-    });
-    login.pop();
     return React.createElement(
       'div',
       null,
       React.createElement(
-        'section',
+        'form',
         { className: 'form-container' },
-        signup,
+        React.createElement('input', { type: 'text', name: 'newUsername', placeholder: 'Enter a username', onChange: this.handleChange }),
+        React.createElement('input', { type: 'password', name: 'newPassword', onChange: this.handleChange }),
+        React.createElement('input', { type: 'password', name: 'confirmPassword', onChange: this.handleChange }),
         React.createElement(
           'button',
-          { onClick: this.handleSubmit },
+          { onClick: this.handleSubmit, value: '/register' },
           'Submit'
         )
       ),
       React.createElement(
-        'section',
+        'form',
         { className: 'form-container' },
-        login,
+        React.createElement('input', { type: 'text', name: 'username', placeholder: 'Enter a username', onChange: this.handleChange }),
+        React.createElement('input', { type: 'password', name: 'password', onChange: this.handleChange }),
         React.createElement(
           'button',
-          { onClick: this.handleSubmit },
+          { onClick: this.handleSubmit, value: '/login' },
           'Submit'
         )
-      )
-    );
-  }
-});
-
-var FormField = React.createClass({
-  displayName: 'FormField',
-
-  render: function render() {
-    return React.createElement(
-      'div',
-      null,
+      ),
       React.createElement(
-        'small',
+        'h2',
         null,
-        this.props.label
-      ),
-      React.createElement(
-        'input',
-        { type: this.props.type,
-          name: this.props.name,
-          placeholder: this.props.placeholder,
-          onClick: this.props.onClick },
-        this.props.text
+        this.state.message
       )
     );
   }
@@ -27435,4 +27417,4 @@ var FormField = React.createClass({
 
 module.exports = LoginSignup;
 
-},{"../data/loginParams.js":216,"react":194,"react-addons-css-transition-group":50}]},{},[218]);
+},{"react":194,"react-addons-css-transition-group":50}]},{},[217]);
