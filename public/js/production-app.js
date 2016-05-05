@@ -27527,7 +27527,12 @@ var LoginSignup = React.createClass({
       ),
       React.createElement(
         'form',
-        { className: 'form-container' },
+        { className: 'form-container six columns' },
+        React.createElement(
+          'h3',
+          null,
+          'Register'
+        ),
         React.createElement('input', { type: 'text', name: 'newUsername', placeholder: 'Enter a username', onChange: this.handleChange }),
         React.createElement('input', { type: 'password', name: 'newPassword', onChange: this.handleChange }),
         React.createElement('input', { type: 'password', name: 'confirmPassword', onChange: this.handleChange }),
@@ -27539,7 +27544,12 @@ var LoginSignup = React.createClass({
       ),
       React.createElement(
         'form',
-        { className: 'form-container' },
+        { className: 'form-container six columns' },
+        React.createElement(
+          'h3',
+          null,
+          'Login'
+        ),
         React.createElement('input', { type: 'text', name: 'username', placeholder: 'Enter a username', onChange: this.handleChange }),
         React.createElement('input', { type: 'password', name: 'password', onChange: this.handleChange }),
         React.createElement(

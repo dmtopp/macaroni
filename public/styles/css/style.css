@@ -26,13 +26,15 @@ button {
   border-radius: 2px;
   margin-left: 4px;
   margin-right: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  background-color: rgba(254, 234, 255, 0.5);
 }
 .logout {
   float: right;
 }
 #chat {
   border-radius: 3px;
-  border: 1px solid rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(0, 0, 0, 0.5);
   height: 250px;
   overflow-y: scroll;
 }
@@ -43,10 +45,23 @@ button {
 #chat p:nth-child(2n) {
   background-color: rgba(0, 0, 0, 0.1);
 }
+#chat-message,
+#room-name {
+  border-radius: 2px;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+}
+.form-container {
+  display: inline-block;
+}
+input[type=text],
+input[type=password] {
+  border-radius: 2px;
+  display: block;
+}
 select {
   height: 25px;
   font-size: 12px;
-  border-radius: 0;
+  border-radius: 2px;
   -webkit-appearance: none;
   padding: 0 4px;
   margin: 3px 5px;
