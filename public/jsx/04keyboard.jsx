@@ -11,11 +11,9 @@ var Keyboard = React.createClass({
     }
   },
   changeOctave: function(e) {
-    // console.log(e.target.value);
     var state = this.state;
     state.octave += parseInt(e.target.value);
     this.setState(state);
-    // console.log(this.state);
   },
   render: function() {
     var notesInOrder = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'],
@@ -97,7 +95,6 @@ var Key = React.createClass({
   },
   keydown: function(e) {
     if (e.keyCode === this.props.myKey && !this.state.pressed) {
-      console.log(e.keyCode);
       var state = this.state;
       state.className = state.className + ' pressed';
       state.pressed = true;

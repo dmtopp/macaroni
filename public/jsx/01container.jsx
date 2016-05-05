@@ -79,7 +79,6 @@ var Container = React.createClass({
           frequency = keyboardData.frequency,
           context = self.state.context;
       self.state.oscillators[frequency].volume.gain.setTargetAtTime(0, context.currentTime, release);
-      console.log(self.state);
     })
 
     sockets.on('drumPadTrigger', function(data) {
@@ -210,28 +209,46 @@ var Container = React.createClass({
     this.setState(state);
   },
   render: function() {
-    console.log('render');
-    var main = <div className='row'><InstrumentContainer  keyboardDown={ this.keyboardDown }
-                          keyboardUp={ this.keyboardUp }
-                          keyParamsHandler={ this.keyParamsHandler }
-                          drumPadTrigger={ this.drumPadTrigger }
-                          context={ this.state.context } />
-               <ChatContainer joinRoom={ this.joinRoom }
-                              sendMessage={ this.sendMessage }
-                              messages={ this.state.messages }
-                              username={ this.props.username }/>
-              <div className='button' onClick={ this.changeToLogin }>Log In</div></div>
+    var main = <div>
+                 <div className='row'>
+                   <AuthButtons isAuthenticated={ this.state.isAuthenticated }
+                                handleLogout={ this.handleLogout }
+                                changeToLogin={ this.changeToLogin } />
+                 </div>
+                 <div className='row'>
+                   <InstrumentContainer  keyboardDown={ this.keyboardDown }
+                                         keyboardUp={ this.keyboardUp }
+                                         keyParamsHandler={ this.keyParamsHandler }
+                                         drumPadTrigger={ this.drumPadTrigger }
+                                         context={ this.state.context } />
+                   <ChatContainer joinRoom={ this.joinRoom }
+                                  sendMessage={ this.sendMessage }
+                                  messages={ this.state.messages }
+                                  username={ this.props.username }/>
+
+                 </div>
+              </div>
 
     var login = <div className='row'><LoginRegister handleLogin={ this.handleLogin }
-                               changeToLogout={ this.changeToLogin }/></div>
+                                                    changeToMain={ this.changeToLogin }/></div>
 
     return <div>
       { this.state.displayLogin ? <div>{ login }</div> : <div>{ main }</div> }
-      { this.state.isAuthenticated ? <div className="logout button" onClick={ this.handleLogout }>Logout</div> : null }
+
     </div>
   }
 })
 
+
+var AuthButtons = React.createClass({
+  render: function() {
+    if (this.props.isAuthenticated) {
+      return <div className='auth button' onClick={ this.props.handleLogout }>Logout</div>
+    } else {
+      return <div className='auth button' onClick={ this.props.changeToLogin }>Log In</div>
+    }
+  }
+})
 /* End container component
 * ============================================================================= */
 

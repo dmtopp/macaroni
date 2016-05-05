@@ -57,20 +57,31 @@ var LoginSignup = React.createClass({
   },
   render: function() {
     return <div>
-      <h2>{ this.state.message }</h2>
-      <form className="form-container six columns">
-        <h3>Register</h3>
-        <input type='text' name='newUsername' placeholder='Enter a username' onChange={ this.handleChange } />
-        <input type='password' name='newPassword' onChange={ this.handleChange } />
-        <input type='password' name='confirmPassword' onChange={ this.handleChange } />
-        <div className='button' onClick={ this.handleSubmit } value='/register'>Submit</div>
-      </form>
-      <form className="form-container six columns">
-        <h3>Login</h3>
-        <input type='text' name='username' placeholder='Enter a username' onChange={ this.handleChange } />
-        <input type='password' name='password' onChange={ this.handleChange } />
-        <div className='button' onClick={ this.handleSubmit } value='/login'>Submit</div>
-      </form>
+      { this.state.message ? <p className='login-message'>{ this.state.message }</p> : null }
+      <div className='six columns login'>
+        <form className="form-container">
+          <h3>Login</h3>
+          <input type='text' name='username' placeholder='Enter a username' onChange={ this.handleChange } />
+          <input type='password' name='password' placeholder='Password' onChange={ this.handleChange } />
+          <div className='button' onClick={ this.handleSubmit } value='/login'>Submit</div>
+        </form>
+      </div>
+
+      <div className='six columns login'>
+        <form className="form-container">
+          <h3>Register</h3>
+          <input type='text' name='newUsername' placeholder='Enter a username' onChange={ this.handleChange } />
+          <input type='password' name='newPassword' placeholder='Password' onChange={ this.handleChange } />
+          <input type='password' name='confirmPassword' placeholder='Confirm password' onChange={ this.handleChange } />
+          <div className='button' onClick={ this.handleSubmit } value='/register'>Submit</div>
+        </form>
+      </div>
+
+      <div className='twelve columns'>
+        <div className='button u-pull-right' onClick={ this.props.changeToMain }>Back</div>
+      </div>
+
+
     </div>
   }
 })

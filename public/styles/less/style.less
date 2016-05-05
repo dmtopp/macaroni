@@ -16,17 +16,18 @@ body {
   height: 100%;
   background-image: url('../../images/background.png');
   font-family: 'Merriweather Sans', sans-serif;
-  // display: flex;
-  // align-items: center;
-  // justify-content: center;
+  position: relative;
 }
 
 .container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 100%;
   background-color: @secondary-color;
-  padding: 10px;
+  padding: 20px;
   border-radius: 4px;
-  margin: 0 auto;
 }
 
 div {
@@ -58,7 +59,7 @@ div {
   // text-align: center;
 }
 
-.logout {
+.auth {
   float: right;
 }
 
@@ -67,6 +68,7 @@ div {
   border: 1px solid @med-grey;
   height: 250px;
   overflow-y: scroll;
+  margin-bottom: 20px;
 
   p{
     padding: 4px;
@@ -90,6 +92,16 @@ div {
 
 .form-container {
   display: inline-block;
+}
+
+.login {
+  display: inline-block;
+  width: 45%;
+}
+
+.login-message {
+  background-color: @light-grey;
+  border-radius: 3px;
 }
 
 input[type=text], input[type=password] {
