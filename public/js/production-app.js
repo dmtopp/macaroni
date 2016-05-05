@@ -26513,43 +26513,6 @@ module.exports = {
 },{}],216:[function(require,module,exports){
 'use strict';
 
-// module.exports = [{
-//                     url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409274kick.wav",
-//                     buffer: ''
-//                   },
-//                   {
-//                     url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409275snare.wav",
-//                     buffer: ''
-//                   },
-//                   {
-//                     url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409276tin.wav",
-//                     buffer: ''
-//                   },
-//                   {
-//                     url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409278hat.wav",
-//                     buffer: ''
-//                   },
-//                   {
-//                     url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409274kick.wav",
-//                     buffer: ''
-//                   },
-//                   {
-//                     url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409275snare.wav",
-//                     buffer: ''
-//                   },
-//                   {
-//                     url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409276tin.wav",
-//                     buffer: ''
-//                   },
-//                   {
-//                     url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409278hat.wav",
-//                     buffer: ''
-//                   },
-//                   {
-//                     url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409276tin.wav",
-//                     buffer: ''
-//                   }];
-
 module.exports = [{
   url: '../sounds/Kick.wav',
   buffer: ''
@@ -26609,7 +26572,7 @@ var Container = React.createClass({
 
     return {
       isAuthenticated: false,
-      userName: 'Mysterious Stranger',
+      username: 'Mysterious Stranger',
       displayLogin: false,
       sockets: io.connect(),
       context: context,
@@ -26765,9 +26728,10 @@ var Container = React.createClass({
     this.state.sockets.emit('drumPadTrigger', data);
   },
   joinRoom: function joinRoom(roomName) {
+    var username = this.state.username || 'Mysterious Stranger';
     this.state.sockets.emit('join-room', roomName);
     this.sendMessage({
-      text: 'You have joined ' + roomName,
+      text: username + ' has joined ' + roomName,
       username: 'Macaroni',
       className: 'from-app'
     });
@@ -26778,7 +26742,7 @@ var Container = React.createClass({
   handleLogin: function handleLogin(data) {
     var state = this.state;
     state.isAuthenticated = true;
-    state.userName = data.username;
+    state.username = data.username;
     this.setState(state);
   },
   handleLogout: function handleLogout(data) {
@@ -26819,7 +26783,7 @@ var Container = React.createClass({
         React.createElement(ChatContainer, { joinRoom: this.joinRoom,
           sendMessage: this.sendMessage,
           messages: this.state.messages,
-          username: this.props.username })
+          username: this.state.username })
       )
     );
 
@@ -26913,11 +26877,14 @@ var ChatContainer = React.createClass({
     chat.scrollTop = chat.scrollHeight;
   },
   addMessage: function addMessage() {
+
     var text = this.state.message,
         messageData = {
       username: this.props.username || 'Mysterious Stranger',
       text: text
     };
+    console.log(messageData);
+    console.log(this.props.username);
     if (text) {
       this.props.sendMessage(messageData);
       var state = this.state;
@@ -26934,6 +26901,7 @@ var ChatContainer = React.createClass({
     this.setState(state);
   },
   render: function render() {
+    // console.log(this.props.messages);
     var messages = this.props.messages.map(function (message, i) {
       return React.createElement(Message, { messageData: message, key: i });
     });
@@ -26976,6 +26944,7 @@ var Message = React.createClass({
     var username = this.props.messageData.username;
     var message = this.props.messageData.text;
     var className = this.props.messageData.className;
+    // console.log(this.props.messageData);
 
     return React.createElement(
       'p',
@@ -27577,7 +27546,7 @@ var LoginSignup = React.createClass({
           state.message = responseData.message;
           if (responseData.username) {
             self.props.handleLogin(responseData);
-            self.props.changeToLogout();
+            self.props.changeToMain();
           } else {
             self.setState(state);
           }

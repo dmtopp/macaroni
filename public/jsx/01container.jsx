@@ -23,7 +23,7 @@ var Container = React.createClass({
 
     return {
       isAuthenticated: false,
-      userName: 'Mysterious Stranger',
+      username: 'Mysterious Stranger',
       displayLogin: false,
       sockets: io.connect(),
       context: context,
@@ -181,9 +181,10 @@ var Container = React.createClass({
     this.state.sockets.emit('drumPadTrigger', data);
   },
   joinRoom: function(roomName) {
+    var username = this.state.username || 'Mysterious Stranger';
     this.state.sockets.emit('join-room', roomName);
     this.sendMessage({
-      text: 'You have joined ' + roomName,
+      text: username + ' has joined ' + roomName,
       username: 'Macaroni',
       className: 'from-app'
     });
@@ -194,7 +195,7 @@ var Container = React.createClass({
   handleLogin: function(data) {
     var state = this.state;
     state.isAuthenticated = true;
-    state.userName = data.username;
+    state.username = data.username;
     this.setState(state);
   },
   handleLogout: function(data) {
@@ -225,7 +226,7 @@ var Container = React.createClass({
                    <ChatContainer joinRoom={ this.joinRoom }
                                   sendMessage={ this.sendMessage }
                                   messages={ this.state.messages }
-                                  username={ this.props.username }/>
+                                  username={ this.state.username }/>
 
                  </div>
               </div>

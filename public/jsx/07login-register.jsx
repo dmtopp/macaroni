@@ -39,7 +39,7 @@ var LoginSignup = React.createClass({
           state.message = responseData.message;
           if (responseData.username) {
             self.props.handleLogin(responseData);
-            self.props.changeToLogout();
+            self.props.changeToMain();
           } else {
             self.setState(state);
           }
