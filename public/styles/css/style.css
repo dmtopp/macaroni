@@ -49,6 +49,8 @@ div {
 }
 .inst-container {
   height: 456px;
+  overflow: hidden;
+  position: relative;
 }
 .auth {
   float: right;
@@ -240,21 +242,37 @@ input[type=range]:focus::-ms-fill-upper {
 }
 .instrument-enter {
   position: absolute;
-  left: -1000px;
+  left: -2000px;
+}
+.instrument-enter .button {
+  display: none;
+  height: 40px;
 }
 .instrument-enter.instrument-enter-active {
   position: absolute;
   left: 0;
-  transition: 0.2s ease-in;
+  transition: 0.4s ease-in;
+}
+.instrument-enter.instrument-enter-active .button {
+  display: none;
+  height: 40px;
 }
 .instrument-leave {
   position: absolute;
   left: 0;
 }
+.instrument-leave .button {
+  display: none;
+  height: 40px;
+}
 .instrument-leave.instrument-leave-active {
   position: absolute;
-  left: 1000px;
-  transition: 0.2s ease-in;
+  left: 2000px;
+  transition: 0.4s ease-in;
+}
+.instrument-leave.instrument-leave-active .button {
+  display: none;
+  height: 40px;
 }
 .drumPad {
   width: 120px;

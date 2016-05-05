@@ -63,6 +63,8 @@ div {
 
 .inst-container {
   height: 456px;
+  overflow: hidden;
+  position: relative;
   // text-align: center;
 }
 
@@ -291,29 +293,45 @@ input[type=range] {
 
 // -------------- instrument transitions --------------
 .instrument-enter {
-  // opacity: 0.01;
   position: absolute;
-  left: -1000px;
+  left: -2000px;
+
+  .button {
+    display: none;
+    height: 40px;
+  }
 }
 
 .instrument-enter.instrument-enter-active {
   position: absolute;
   left: 0;
-  // transition: opacity 500ms ease-in;
-  transition: 0.2s ease-in;
+  transition: 0.4s ease-in;
+
+  .button {
+    display: none;
+    height: 40px;
+  }
 }
 
 .instrument-leave {
   position: absolute;
   left: 0;
+
+  .button {
+    display: none;
+    height: 40px;
+  }
 }
 
 .instrument-leave.instrument-leave-active {
-  // opacity: 0.01;
-  // transition: opacity 300ms ease-in;
   position: absolute;
-  left: 1000px;
-  transition: 0.2s ease-in;
+  left: 2000px;
+  transition: 0.4s ease-in;
+
+  .button {
+    display: none;
+    height: 40px;
+  }
 }
 
 // -------------- end instrument transitions --------------

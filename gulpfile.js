@@ -21,7 +21,7 @@ gulp.task('react', function(){
     }))
     .pipe(buffer())
     .pipe(concat('./production-app.js'))
-    // .pipe(uglify())
+    .pipe(uglify())
     .pipe(gulp.dest('./public/js')); // place to send uglified regular js files
 });
 

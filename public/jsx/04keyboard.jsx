@@ -79,6 +79,10 @@ var Keyboard = React.createClass({
             <div className='button' onClick={ this.changeOctave } value="-1">-</div>
           </div>
         </div>
+        <div className='u-full-width'>
+          <div className='button prevInst' onClick={ this.props.switchInstruments } value="1">Prev</div>
+          <div className='button nextInst' onClick={ this.props.switchInstruments } value="-1">Next</div>
+        </div>
       </div>
     )
   }

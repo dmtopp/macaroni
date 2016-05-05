@@ -29,17 +29,17 @@ var InstrumentContainer = React.createClass({
 
             { this.state.instrumentToDisplay % 3 === 0 ? <Keyboard keyboardDown={ this.props.keyboardDown }
                                                                    keyboardUp={ this.props.keyboardUp }
-                                                                   keyParamsHandler={ this.props.keyParamsHandler } /> : null }
+                                                                   keyParamsHandler={ this.props.keyParamsHandler }
+                                                                   switchInstruments={ this.switchInstruments } /> : null }
 
-            { Math.abs(this.state.instrumentToDisplay) % 3 === 1 ? <DrumMachine drumPadTrigger={ this.props.drumPadTrigger }/> : null }
+            { Math.abs(this.state.instrumentToDisplay) % 3 === 1 ? <DrumMachine drumPadTrigger={ this.props.drumPadTrigger }
+                                                                                switchInstruments={ this.switchInstruments }/> : null }
 
             { Math.abs(this.state.instrumentToDisplay) % 3 === 2 ? <DrumLoop context = { this.props.context }
-                                                                   drumPadTrigger={ this.props.drumPadTrigger }/> : null }
-           <div className='u-full-width'>
-             <div className='button prevInst' onClick={ this.switchInstruments } value="1">Prev</div>
-             <div className='button nextInst' onClick={ this.switchInstruments } value="-1">Next</div>
-           </div>
-          </ReactTransition>
+                                                                             drumPadTrigger={ this.props.drumPadTrigger }
+                                                                             switchInstruments={ this.switchInstruments }/> : null }
+
+           </ReactTransition>
 
 
         </div>

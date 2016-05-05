@@ -27032,24 +27032,13 @@ var InstrumentContainer = React.createClass({
         { transitionName: 'instrument', transitionEnterTimeout: 0, transitionLeaveTimeout: 0 },
         this.state.instrumentToDisplay % 3 === 0 ? React.createElement(Keyboard, { keyboardDown: this.props.keyboardDown,
           keyboardUp: this.props.keyboardUp,
-          keyParamsHandler: this.props.keyParamsHandler }) : null,
-        Math.abs(this.state.instrumentToDisplay) % 3 === 1 ? React.createElement(DrumMachine, { drumPadTrigger: this.props.drumPadTrigger }) : null,
+          keyParamsHandler: this.props.keyParamsHandler,
+          switchInstruments: this.switchInstruments }) : null,
+        Math.abs(this.state.instrumentToDisplay) % 3 === 1 ? React.createElement(DrumMachine, { drumPadTrigger: this.props.drumPadTrigger,
+          switchInstruments: this.switchInstruments }) : null,
         Math.abs(this.state.instrumentToDisplay) % 3 === 2 ? React.createElement(DrumLoop, { context: this.props.context,
-          drumPadTrigger: this.props.drumPadTrigger }) : null,
-        React.createElement(
-          'div',
-          { className: 'u-full-width' },
-          React.createElement(
-            'div',
-            { className: 'button prevInst', onClick: this.switchInstruments, value: '1' },
-            'Prev'
-          ),
-          React.createElement(
-            'div',
-            { className: 'button nextInst', onClick: this.switchInstruments, value: '-1' },
-            'Next'
-          )
-        )
+          drumPadTrigger: this.props.drumPadTrigger,
+          switchInstruments: this.switchInstruments }) : null
       )
     );
   }
@@ -27161,6 +27150,20 @@ var Keyboard = React.createClass({
             { className: 'button', onClick: this.changeOctave, value: '-1' },
             '-'
           )
+        )
+      ),
+      React.createElement(
+        'div',
+        { className: 'u-full-width' },
+        React.createElement(
+          'div',
+          { className: 'button prevInst', onClick: this.props.switchInstruments, value: '1' },
+          'Prev'
+        ),
+        React.createElement(
+          'div',
+          { className: 'button nextInst', onClick: this.props.switchInstruments, value: '-1' },
+          'Next'
         )
       )
     );
@@ -27307,7 +27310,21 @@ var DrumMachine = React.createClass({
     return React.createElement(
       'div',
       { className: 'drum-machine-container' },
-      pads
+      pads,
+      React.createElement(
+        'div',
+        { className: 'u-full-width' },
+        React.createElement(
+          'div',
+          { className: 'button prevInst', onClick: this.props.switchInstruments, value: '1' },
+          'Prev'
+        ),
+        React.createElement(
+          'div',
+          { className: 'button nextInst', onClick: this.props.switchInstruments, value: '-1' },
+          'Next'
+        )
+      )
     );
   }
 });
@@ -27463,7 +27480,21 @@ var DrumLoop = React.createClass({
         onChange: this.tempoHandler,
         defaultValue: '88',
         min: '40',
-        max: '255' })
+        max: '255' }),
+      React.createElement(
+        'div',
+        { className: 'u-full-width' },
+        React.createElement(
+          'div',
+          { className: 'button prevInst', onClick: this.props.switchInstruments, value: '1' },
+          'Prev'
+        ),
+        React.createElement(
+          'div',
+          { className: 'button nextInst', onClick: this.props.switchInstruments, value: '-1' },
+          'Next'
+        )
+      )
     );
   }
 });

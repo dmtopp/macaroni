@@ -76,7 +76,11 @@ var DrumLoop = React.createClass({
                    defaultValue="88"
                    min="40"
                    max="255" />
+           <div className='u-full-width'>
+             <div className='button prevInst' onClick={ this.props.switchInstruments } value="1">Prev</div>
+             <div className='button nextInst' onClick={ this.props.switchInstruments } value="-1">Next</div>
            </div>
+         </div>
   }
 })
 
