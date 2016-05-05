@@ -25,7 +25,7 @@ var InstrumentContainer = React.createClass({
     return (
 
         <div className="eight columns inst-container">
-          <ReactTransition transitionName="instrument" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
+          <ReactTransition transitionName="instrument" transitionEnterTimeout={0} transitionLeaveTimeout={0}>
 
             { this.state.instrumentToDisplay % 3 === 0 ? <Keyboard keyboardDown={ this.props.keyboardDown }
                                                                    keyboardUp={ this.props.keyboardUp }
@@ -35,12 +35,12 @@ var InstrumentContainer = React.createClass({
 
             { Math.abs(this.state.instrumentToDisplay) % 3 === 2 ? <DrumLoop context = { this.props.context }
                                                                    drumPadTrigger={ this.props.drumPadTrigger }/> : null }
-
+           <div className='u-full-width'>
+             <div className='button prevInst' onClick={ this.switchInstruments } value="1">Prev</div>
+             <div className='button nextInst' onClick={ this.switchInstruments } value="-1">Next</div>
+           </div>
           </ReactTransition>
-            <div className='u-full-width'>
-              <div className='button prevInst' onClick={ this.switchInstruments } value="1">Prev</div>
-              <div className='button nextInst' onClick={ this.switchInstruments } value="-1">Next</div>
-            </div>
+
 
         </div>
 

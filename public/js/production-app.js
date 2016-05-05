@@ -26466,7 +26466,7 @@ module.exports = [['1.1.01'], ['1.1.50'], ['1.2.01'], ['1.2.50'], ['1.3.01'], ['
 },{}],212:[function(require,module,exports){
 'use strict';
 
-module.exports = [['a', 65], ['s', 83], ['d', 68], ['f', 70], ['j', 74], ['k', 75], ['l', 76], [';', 186], ['\'', 222]];
+module.exports = [['q', 81], ['w', 87], ['e', 69], ['a', 65], ['s', 83], ['d', 68], ['z', 90], ['x', 88], ['c', 67]];
 
 },{}],213:[function(require,module,exports){
 'use strict';
@@ -27029,26 +27029,26 @@ var InstrumentContainer = React.createClass({
       { className: 'eight columns inst-container' },
       React.createElement(
         ReactTransition,
-        { transitionName: 'instrument', transitionEnterTimeout: 500, transitionLeaveTimeout: 300 },
+        { transitionName: 'instrument', transitionEnterTimeout: 0, transitionLeaveTimeout: 0 },
         this.state.instrumentToDisplay % 3 === 0 ? React.createElement(Keyboard, { keyboardDown: this.props.keyboardDown,
           keyboardUp: this.props.keyboardUp,
           keyParamsHandler: this.props.keyParamsHandler }) : null,
         Math.abs(this.state.instrumentToDisplay) % 3 === 1 ? React.createElement(DrumMachine, { drumPadTrigger: this.props.drumPadTrigger }) : null,
         Math.abs(this.state.instrumentToDisplay) % 3 === 2 ? React.createElement(DrumLoop, { context: this.props.context,
-          drumPadTrigger: this.props.drumPadTrigger }) : null
-      ),
-      React.createElement(
-        'div',
-        { className: 'u-full-width' },
+          drumPadTrigger: this.props.drumPadTrigger }) : null,
         React.createElement(
           'div',
-          { className: 'button prevInst', onClick: this.switchInstruments, value: '1' },
-          'Prev'
-        ),
-        React.createElement(
-          'div',
-          { className: 'button nextInst', onClick: this.switchInstruments, value: '-1' },
-          'Next'
+          { className: 'u-full-width' },
+          React.createElement(
+            'div',
+            { className: 'button prevInst', onClick: this.switchInstruments, value: '1' },
+            'Prev'
+          ),
+          React.createElement(
+            'div',
+            { className: 'button nextInst', onClick: this.switchInstruments, value: '-1' },
+            'Next'
+          )
         )
       )
     );
