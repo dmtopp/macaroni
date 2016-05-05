@@ -34,3 +34,5 @@ node_modules
 
 # .env file to store hidden secrets like api keys
 .env
+
+sounds

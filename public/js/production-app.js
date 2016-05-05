@@ -26771,17 +26771,16 @@ var Container = React.createClass({
       )
     );
 
-    var login = React.createElement(LoginRegister, { handleLogin: this.handleLogin,
-      changeToLogout: this.changeToLogin });
+    var login = React.createElement(
+      'div',
+      { className: 'row' },
+      React.createElement(LoginRegister, { handleLogin: this.handleLogin,
+        changeToLogout: this.changeToLogin })
+    );
 
     return React.createElement(
       'div',
       null,
-      this.state.isAuthenticated ? React.createElement(
-        'button',
-        { className: 'logout', onClick: this.handleLogout },
-        'Logout'
-      ) : null,
       this.state.displayLogin ? React.createElement(
         'div',
         null,
@@ -26790,7 +26789,12 @@ var Container = React.createClass({
         'div',
         null,
         main
-      )
+      ),
+      this.state.isAuthenticated ? React.createElement(
+        'button',
+        { className: 'logout', onClick: this.handleLogout },
+        'Logout'
+      ) : null
     );
   }
 });

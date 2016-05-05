@@ -217,12 +217,13 @@ var Container = React.createClass({
                               username={ this.props.username }/>
                <button onClick={ this.changeToLogin }>Log In</button></div>
 
-    var login = <LoginRegister handleLogin={ this.handleLogin }
-                               changeToLogout={ this.changeToLogin }/>
+    var login = <div className='row'><LoginRegister handleLogin={ this.handleLogin }
+                               changeToLogout={ this.changeToLogin }/></div>
 
     return <div>
-      { this.state.isAuthenticated ? <button className="logout" onClick={ this.handleLogout }>Logout</button> : null }
       { this.state.displayLogin ? <div>{ login }</div> : <div>{ main }</div> }
+      { this.state.isAuthenticated ? <button className="logout" onClick={ this.handleLogout }>Logout</button> : null }
+
 
 
 
