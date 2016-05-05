@@ -9,40 +9,34 @@ body {
   height: 100%;
   background-image: url('../../images/background.png');
   font-family: 'Merriweather Sans', sans-serif;
-  display: flex;
-  align-items: center;
 }
 .container {
   width: 100%;
-  background-color: rgba(254, 234, 255, 0.5);
+  background-color: rgba(254, 234, 255, 0.4);
   padding: 10px;
   border-radius: 4px;
+  margin: 0 auto;
 }
 div {
   display: block;
 }
-button {
-  padding: 10px;
-  border-radius: 2px;
-  margin-left: 4px;
-  margin-right: 4px;
-  border: 1px solid rgba(0, 0, 0, 0.5);
-  background-color: rgba(254, 234, 255, 0.5);
-}
 .button {
+  color: rgba(0, 0, 0, 0.7);
   height: 25px;
   padding: 0 10px;
   border-radius: 2px;
   margin-left: 4px;
   margin-right: 4px;
   border: 1px solid rgba(0, 0, 0, 0.5);
-  background-color: rgba(254, 234, 255, 0.5);
+  background-color: rgba(254, 234, 255, 0.4);
 }
 .prevInst {
   float: left;
+  margin-left: 4px;
 }
 .nextInst {
   float: right;
+  margin-right: 10%;
 }
 .logout {
   float: right;
@@ -58,10 +52,10 @@ button {
   margin: 0;
 }
 #chat p:nth-child(2n) {
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.05);
 }
 #chat .from-app:nth-child(n) {
-  background-color: rgba(220, 220, 255, 0.4);
+  background-color: rgba(255, 255, 255, 0.2);
 }
 #chat-message,
 #room-name {
@@ -167,6 +161,7 @@ input[type=range]:focus::-ms-fill-upper {
   border-bottom-right-radius: 10px;
   border-bottom-left-radius: 10px;
   display: inline-block;
+  color: rgba(0, 0, 0, 0.7);
 }
 .blackKey {
   height: 150px;
@@ -176,7 +171,7 @@ input[type=range]:focus::-ms-fill-upper {
   border-bottom-left-radius: 10px;
   display: inline-block;
   background-color: black;
-  color: white;
+  color: rgba(254, 234, 255, 0.4);
   position: absolute;
   margin-left: -18px;
 }
@@ -221,8 +216,13 @@ input[type=range]:focus::-ms-fill-upper {
   display: inline-block;
   margin: 0 15px;
 }
+.pad-container p {
+  margin-left: 7px;
+}
 .drum-machine-container {
   width: 630px;
+  margin-bottom: 25px;
+  margin-left: 25px;
 }
 .loop-button {
   height: 24px;
@@ -234,4 +234,5 @@ input[type=range]:focus::-ms-fill-upper {
 }
 .loop-container {
   width: 600px;
+  margin-bottom: 20px;
 }

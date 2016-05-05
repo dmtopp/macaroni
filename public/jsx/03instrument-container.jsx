@@ -24,7 +24,7 @@ var InstrumentContainer = React.createClass({
   render: function() {
     return (
 
-        <div className="eight columns">
+        <div className="eight columns inst-container">
           <ReactTransition transitionName="instrument" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
 
             { this.state.instrumentToDisplay % 3 === 0 ? <Keyboard keyboardDown={ this.props.keyboardDown }

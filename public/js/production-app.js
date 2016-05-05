@@ -26616,7 +26616,8 @@ var Container = React.createClass({
       masterVolume: masterVolume,
       oscillators: {},
       messages: [{ username: 'Macaroni',
-        text: 'Welcome to macaroni!  Enter a room name to join or start a noodle.' }],
+        text: 'Welcome to macaroni!  Enter a room name to join or start a noodle.',
+        className: 'from-app' }],
       keyboardData: keyboardData,
       sounds: sounds
     };
@@ -26682,6 +26683,7 @@ var Container = React.createClass({
     var name = e.target.name;
     var value = e.target.value;
     var state = this.state;
+    e.target.blur();
 
     switch (name) {
       case 'attack':
@@ -26999,7 +27001,7 @@ var InstrumentContainer = React.createClass({
   render: function render() {
     return React.createElement(
       'div',
-      { className: 'eight columns' },
+      { className: 'eight columns inst-container' },
       React.createElement(
         ReactTransition,
         { transitionName: 'instrument', transitionEnterTimeout: 500, transitionLeaveTimeout: 300 },
@@ -27329,7 +27331,11 @@ var DrumPad = React.createClass({
       React.createElement(
         'div',
         { className: this.state.className },
-        this.props.myLetter.toUpperCase()
+        React.createElement(
+          'p',
+          null,
+          this.props.myLetter.toUpperCase()
+        )
       )
     );
   }

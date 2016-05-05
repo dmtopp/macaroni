@@ -65,7 +65,7 @@ var DrumPad = React.createClass({
     return (
       <div className='pad-container'>
         <div className={ this.state.className }>
-          { this.props.myLetter.toUpperCase() }
+          <p>{ this.props.myLetter.toUpperCase() }</p>
         </div>
 
       </div> )

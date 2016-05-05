@@ -30,7 +30,8 @@ var Container = React.createClass({
       masterVolume: masterVolume,
       oscillators: {},
       messages: [{ username: 'Macaroni',
-                   text: 'Welcome to macaroni!  Enter a room name to join or start a noodle.' }],
+                   text: 'Welcome to macaroni!  Enter a room name to join or start a noodle.',
+                   className: 'from-app' }],
       keyboardData: keyboardData,
       sounds: sounds
     }
@@ -97,6 +98,7 @@ var Container = React.createClass({
     var name = e.target.name;
     var value = e.target.value;
     var state = this.state;
+    e.target.blur();
 
     switch (name) {
       case 'attack':
