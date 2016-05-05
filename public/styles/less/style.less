@@ -40,6 +40,23 @@ button {
   background-color: @secondary-color;
 }
 
+.button {
+  height: 25px;
+  padding: 0 10px;
+  border-radius: 2px;
+  margin-left: 4px;
+  margin-right: 4px;
+  border: 1px solid @med-grey;
+  background-color: @secondary-color;
+}
+
+.prevInst {
+  float: left;
+}
+
+.nextInst {
+  float: right;
+}
 .logout {
   float: right;
 }
@@ -59,8 +76,15 @@ button {
   p:nth-child(2n) {
     background-color: @light-grey;
   }
-  p:nth-child(2n + 1) {
+
+  .from-app:nth-child(n) {
+    background-color: rgba(220, 220, 255, 0.4);
   }
+  p:nth-child(2n + 1) {
+
+  }
+
+
 }
 
 #chat-message, #room-name {
@@ -81,6 +105,7 @@ select {
   height: 25px;
   font-size: 12px;
   border-radius: 2px;
+  border: 1px solid @med-grey;
   -webkit-appearance: none;
   padding: 0 4px;
   margin: 3px 5px;

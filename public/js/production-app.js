@@ -26615,7 +26615,8 @@ var Container = React.createClass({
       context: context,
       masterVolume: masterVolume,
       oscillators: {},
-      messages: ['Welcome to macaroni!  Enter a room name to join or start a noodle.'],
+      messages: [{ username: 'Macaroni',
+        text: 'Welcome to macaroni!  Enter a room name to join or start a noodle.' }],
       keyboardData: keyboardData,
       sounds: sounds
     };
@@ -26672,7 +26673,7 @@ var Container = React.createClass({
 
     sockets.on('new-message', function (messageData) {
       var state = self.state;
-      state.messages.push(messageData.username + ': ' + messageData.text);
+      state.messages.push(messageData);
       self.setState(state);
     });
   },
@@ -26766,7 +26767,8 @@ var Container = React.createClass({
     this.state.sockets.emit('join-room', roomName);
     this.sendMessage({
       text: 'You have joined ' + roomName,
-      username: 'Macaroni'
+      username: 'Macaroni',
+      className: 'from-app'
     });
   },
   sendMessage: function sendMessage(data) {
@@ -26804,8 +26806,8 @@ var Container = React.createClass({
         messages: this.state.messages,
         username: this.props.username }),
       React.createElement(
-        'button',
-        { onClick: this.changeToLogin },
+        'div',
+        { className: 'button', onClick: this.changeToLogin },
         'Log In'
       )
     );
@@ -26830,8 +26832,8 @@ var Container = React.createClass({
         main
       ),
       this.state.isAuthenticated ? React.createElement(
-        'button',
-        { className: 'logout', onClick: this.handleLogout },
+        'div',
+        { className: 'logout button', onClick: this.handleLogout },
         'Logout'
       ) : null
     );
@@ -26908,7 +26910,7 @@ var ChatContainer = React.createClass({
   },
   render: function render() {
     var messages = this.props.messages.map(function (message, i) {
-      return React.createElement(Message, { text: message, key: i });
+      return React.createElement(Message, { messageData: message, key: i });
     });
     return React.createElement(
       'div',
@@ -26923,8 +26925,8 @@ var ChatContainer = React.createClass({
         value: this.state.message,
         onChange: this.handleChange }),
       React.createElement(
-        'button',
-        { onClick: this.addMessage },
+        'div',
+        { className: 'button', onClick: this.addMessage },
         'Send'
       ),
       React.createElement('input', { id: 'room-name',
@@ -26932,8 +26934,8 @@ var ChatContainer = React.createClass({
         value: this.state.roomName,
         onChange: this.handleChange }),
       React.createElement(
-        'button',
-        { onClick: this.joinRoom },
+        'div',
+        { className: 'button', onClick: this.joinRoom },
         'Join Room'
       )
     );
@@ -26944,10 +26946,20 @@ var Message = React.createClass({
   displayName: 'Message',
 
   render: function render() {
+    var username = this.props.messageData.username;
+    var message = this.props.messageData.text;
+    var className = this.props.messageData.className;
+
     return React.createElement(
       'p',
-      null,
-      this.props.text
+      { className: className },
+      React.createElement(
+        'b',
+        null,
+        username,
+        ':  '
+      ),
+      message
     );
   }
 });
@@ -26999,14 +27011,18 @@ var InstrumentContainer = React.createClass({
           drumPadTrigger: this.props.drumPadTrigger }) : null
       ),
       React.createElement(
-        'button',
-        { type: 'button', onClick: this.switchInstruments, value: '1' },
-        'Prev'
-      ),
-      React.createElement(
-        'button',
-        { type: 'button', onClick: this.switchInstruments, value: '-1' },
-        'Next'
+        'div',
+        { className: 'twelve columns' },
+        React.createElement(
+          'div',
+          { className: 'button prevInst', onClick: this.switchInstruments, value: '1' },
+          'Prev'
+        ),
+        React.createElement(
+          'div',
+          { className: 'button nextInst', onClick: this.switchInstruments, value: '-1' },
+          'Next'
+        )
       )
     );
   }
@@ -27111,13 +27127,13 @@ var Keyboard = React.createClass({
           'div',
           { className: 'three columns' },
           React.createElement(
-            'button',
-            { onClick: this.changeOctave, value: '1' },
+            'div',
+            { className: 'button', onClick: this.changeOctave, value: '1' },
             '+'
           ),
           React.createElement(
-            'button',
-            { onClick: this.changeOctave, value: '-1' },
+            'div',
+            { className: 'button', onClick: this.changeOctave, value: '-1' },
             '-'
           )
         )
@@ -27401,12 +27417,12 @@ var DrumLoop = React.createClass({
       { className: 'loop-container' },
       allLoopButtons,
       this.state.playing ? React.createElement(
-        'button',
-        { onClick: this.playHandler },
+        'div',
+        { className: 'button', onClick: this.playHandler },
         'Stop'
       ) : React.createElement(
-        'button',
-        { onClick: this.playHandler },
+        'div',
+        { className: 'button', onClick: this.playHandler },
         'Start'
       ),
       React.createElement(
@@ -27537,8 +27553,8 @@ var LoginSignup = React.createClass({
         React.createElement('input', { type: 'password', name: 'newPassword', onChange: this.handleChange }),
         React.createElement('input', { type: 'password', name: 'confirmPassword', onChange: this.handleChange }),
         React.createElement(
-          'button',
-          { onClick: this.handleSubmit, value: '/register' },
+          'div',
+          { className: 'button', onClick: this.handleSubmit, value: '/register' },
           'Submit'
         )
       ),
@@ -27553,8 +27569,8 @@ var LoginSignup = React.createClass({
         React.createElement('input', { type: 'text', name: 'username', placeholder: 'Enter a username', onChange: this.handleChange }),
         React.createElement('input', { type: 'password', name: 'password', onChange: this.handleChange }),
         React.createElement(
-          'button',
-          { onClick: this.handleSubmit, value: '/login' },
+          'div',
+          { className: 'button', onClick: this.handleSubmit, value: '/login' },
           'Submit'
         )
       )

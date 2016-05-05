@@ -63,13 +63,13 @@ var LoginSignup = React.createClass({
         <input type='text' name='newUsername' placeholder='Enter a username' onChange={ this.handleChange } />
         <input type='password' name='newPassword' onChange={ this.handleChange } />
         <input type='password' name='confirmPassword' onChange={ this.handleChange } />
-        <button onClick={ this.handleSubmit } value='/register'>Submit</button>
+        <div className='button' onClick={ this.handleSubmit } value='/register'>Submit</div>
       </form>
       <form className="form-container six columns">
         <h3>Login</h3>
         <input type='text' name='username' placeholder='Enter a username' onChange={ this.handleChange } />
         <input type='password' name='password' onChange={ this.handleChange } />
-        <button onClick={ this.handleSubmit } value='/login'>Submit</button>
+        <div className='button' onClick={ this.handleSubmit } value='/login'>Submit</div>
       </form>
     </div>
   }

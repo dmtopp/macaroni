@@ -29,7 +29,8 @@ var Container = React.createClass({
       context: context,
       masterVolume: masterVolume,
       oscillators: {},
-      messages: ['Welcome to macaroni!  Enter a room name to join or start a noodle.'],
+      messages: [{ username: 'Macaroni',
+                   text: 'Welcome to macaroni!  Enter a room name to join or start a noodle.' }],
       keyboardData: keyboardData,
       sounds: sounds
     }
@@ -86,7 +87,7 @@ var Container = React.createClass({
 
     sockets.on('new-message', function(messageData) {
       var state = self.state;
-      state.messages.push(messageData.username + ': ' + messageData.text);
+      state.messages.push(messageData);
       self.setState(state);
     })
 
@@ -182,7 +183,8 @@ var Container = React.createClass({
     this.state.sockets.emit('join-room', roomName);
     this.sendMessage({
       text: 'You have joined ' + roomName,
-      username: 'Macaroni'
+      username: 'Macaroni',
+      className: 'from-app'
     });
   },
   sendMessage: function(data) {
@@ -216,14 +218,14 @@ var Container = React.createClass({
                               sendMessage={ this.sendMessage }
                               messages={ this.state.messages }
                               username={ this.props.username }/>
-               <button onClick={ this.changeToLogin }>Log In</button></div>
+              <div className='button' onClick={ this.changeToLogin }>Log In</div></div>
 
     var login = <div className='row'><LoginRegister handleLogin={ this.handleLogin }
                                changeToLogout={ this.changeToLogin }/></div>
 
     return <div>
       { this.state.displayLogin ? <div>{ login }</div> : <div>{ main }</div> }
-      { this.state.isAuthenticated ? <button className="logout" onClick={ this.handleLogout }>Logout</button> : null }
+      { this.state.isAuthenticated ? <div className="logout button" onClick={ this.handleLogout }>Logout</div> : null }
     </div>
   }
 })

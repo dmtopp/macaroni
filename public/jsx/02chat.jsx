@@ -59,7 +59,7 @@ var ChatContainer = React.createClass({
   },
   render: function() {
     var messages = this.props.messages.map(function(message, i) {
-      return <Message text={ message } key={ i } />
+      return <Message messageData={ message } key={ i } />
     })
     return <div className="four columns">
       <section id="chat">
@@ -70,20 +70,24 @@ var ChatContainer = React.createClass({
              name="message"
              value={ this.state.message }
              onChange={ this.handleChange } />
-      <button onClick={ this.addMessage }>Send</button>
+      <div className='button' onClick={ this.addMessage }>Send</div>
 
       <input id="room-name"
              name="roomName"
              value={ this.state.roomName }
              onChange={ this.handleChange } />
-           <button onClick={ this.joinRoom }>Join Room</button>
+      <div className='button' onClick={ this.joinRoom }>Join Room</div>
     </div>
   }
 })
 
 var Message = React.createClass({
   render: function() {
-    return <p>{ this.props.text }</p>
+    var username = this.props.messageData.username;
+    var message = this.props.messageData.text;
+    var className = this.props.messageData.className;
+
+    return <p className={ className }><b>{ username }:  </b>{ message }</p>
   }
 })
 

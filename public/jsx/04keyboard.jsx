@@ -77,8 +77,8 @@ var Keyboard = React.createClass({
             { paramSliders }
           </div>
           <div className='three columns'>
-            <button onClick={ this.changeOctave } value="1">+</button>
-            <button onClick={ this.changeOctave } value="-1">-</button>
+            <div className='button' onClick={ this.changeOctave } value="1">+</div>
+            <div className='button' onClick={ this.changeOctave } value="-1">-</div>
           </div>
         </div>
       </div>

@@ -37,8 +37,11 @@ var InstrumentContainer = React.createClass({
                                                                    drumPadTrigger={ this.props.drumPadTrigger }/> : null }
 
           </ReactTransition>
-          <button type="button" onClick={ this.switchInstruments } value="1">Prev</button>
-          <button type="button" onClick={ this.switchInstruments } value="-1">Next</button>
+            <div className='twelve columns'>
+              <div className='button prevInst' onClick={ this.switchInstruments } value="1">Prev</div>
+              <div className='button nextInst' onClick={ this.switchInstruments } value="-1">Next</div>
+            </div>
+
         </div>
 
     )
