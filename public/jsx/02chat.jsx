@@ -12,32 +12,41 @@ var ChatContainer = React.createClass({
     }
   },
   componentDidMount: function() {
+    // add our welcome message to chat
     this.addMessage();
     var inputs = document.querySelectorAll('input');
-
-
+    var self = this;
     // stop our inputs from triggering our instrument sounds
     for (var i = 0; i < inputs.length; i++) {
       inputs[i].addEventListener('keydown', function(e) {
-        e.stopPropagation();
+        if (e.keyCode === 13) {
+          self.addMessage();
+        } else {
+          e.stopPropagation();
+        }
       })
       inputs[i].addEventListener('keyup', function(e) {
         e.stopPropagation();
       })
     }
-
+  },
+  componentDidUpdate: function() {
+    // this has our chat scroll down to the most recent message
+    var chat = document.querySelector('#chat');
+    chat.scrollTop = chat.scrollHeight;
   },
   addMessage: function() {
-    var text = this.state.message
+    var text = this.state.message,
+        messageData = {
+          username: this.props.username || 'Mysterious Stranger',
+          text: text
+        }
     if (text) {
+      this.props.sendMessage(messageData);
       var state = this.state;
       state.message = '';
       this.setState(state);
-      var messageData = {
-        username: this.props.username || 'Mysterious Stranger',
-        text: text
-      }
-      this.props.sendMessage(messageData);
+
     }
   },
   joinRoom: function() {

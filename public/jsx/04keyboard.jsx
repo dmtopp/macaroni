@@ -91,13 +91,16 @@ var Keyboard = React.createClass({
 var Key = React.createClass({
   getInitialState: function() {
     return {
-      className: this.props.className
+      className: this.props.className,
+      pressed: false
     }
   },
   keydown: function(e) {
-    if (e.keyCode === this.props.myKey) {
+    if (e.keyCode === this.props.myKey && !this.state.pressed) {
+      console.log(e.keyCode);
       var state = this.state;
       state.className = state.className + ' pressed';
+      state.pressed = true;
       this.setState(state);
 
       this.props.keyboardDown(this.props.frequency);
@@ -107,6 +110,7 @@ var Key = React.createClass({
     if (e.keyCode === this.props.myKey) {
       var state = this.state;
       state.className = state.className.split(' ')[0];
+      state.pressed = false;
       this.setState(state);
 
       this.props.keyboardUp(this.props.frequency);

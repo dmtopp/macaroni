@@ -26511,34 +26511,71 @@ module.exports = {
 };
 
 },{}],216:[function(require,module,exports){
-"use strict";
+'use strict';
+
+// module.exports = [{
+//                     url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409274kick.wav",
+//                     buffer: ''
+//                   },
+//                   {
+//                     url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409275snare.wav",
+//                     buffer: ''
+//                   },
+//                   {
+//                     url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409276tin.wav",
+//                     buffer: ''
+//                   },
+//                   {
+//                     url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409278hat.wav",
+//                     buffer: ''
+//                   },
+//                   {
+//                     url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409274kick.wav",
+//                     buffer: ''
+//                   },
+//                   {
+//                     url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409275snare.wav",
+//                     buffer: ''
+//                   },
+//                   {
+//                     url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409276tin.wav",
+//                     buffer: ''
+//                   },
+//                   {
+//                     url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409278hat.wav",
+//                     buffer: ''
+//                   },
+//                   {
+//                     url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409276tin.wav",
+//                     buffer: ''
+//                   }];
 
 module.exports = [{
-  url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409274kick.wav",
+  url: '../sounds/Kick.wav',
   buffer: ''
 }, {
-  url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409275snare.wav",
+  url: '../sounds/Snare.wav',
   buffer: ''
 }, {
-  url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409276tin.wav",
+  url: '../sounds/Hat.wav',
   buffer: ''
 }, {
-  url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409278hat.wav",
+  url: '../sounds/Clap.wav',
   buffer: ''
 }, {
-  url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409274kick.wav",
+  url: '../sounds/Snap.wav',
   buffer: ''
 }, {
-  url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409275snare.wav",
+  url: '../sounds/Tambo.wav',
   buffer: ''
 }, {
-  url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409276tin.wav",
+  url: '../sounds/Bling.wav',
   buffer: ''
 }, {
-  url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409278hat.wav",
+  url: '../sounds/Bongo.wav',
   buffer: ''
 }, {
-  url: "http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/08/1407409276tin.wav",
+  url: '../sounds/Cymbal.wav',
   buffer: ''
 }];
 
@@ -26626,6 +26663,7 @@ var Container = React.createClass({
           frequency = keyboardData.frequency,
           context = self.state.context;
       self.state.oscillators[frequency].volume.gain.setTargetAtTime(0, context.currentTime, release);
+      console.log(self.state);
     });
 
     sockets.on('drumPadTrigger', function (data) {
@@ -26682,7 +26720,7 @@ var Container = React.createClass({
     // set gain for both oscillators
     // start gain at 0 and then ramp up over attack time
     oscVolume.gain.value = 0;
-    oscVolume.gain.setTargetAtTime(1, context.currentTime, data.attack);
+    oscVolume.gain.setTargetAtTime(0.5, context.currentTime, data.attack);
 
     osc.frequency.value = frequency;
     osc2.frequency.value = frequency;
@@ -26752,6 +26790,7 @@ var Container = React.createClass({
     this.setState(state);
   },
   render: function render() {
+    console.log('render');
     var main = React.createElement(
       'div',
       { className: 'row' },
@@ -26823,30 +26862,40 @@ var ChatContainer = React.createClass({
     };
   },
   componentDidMount: function componentDidMount() {
+    // add our welcome message to chat
     this.addMessage();
     var inputs = document.querySelectorAll('input');
-
+    var self = this;
     // stop our inputs from triggering our instrument sounds
     for (var i = 0; i < inputs.length; i++) {
       inputs[i].addEventListener('keydown', function (e) {
-        e.stopPropagation();
+        if (e.keyCode === 13) {
+          self.addMessage();
+        } else {
+          e.stopPropagation();
+        }
       });
       inputs[i].addEventListener('keyup', function (e) {
         e.stopPropagation();
       });
     }
   },
+  componentDidUpdate: function componentDidUpdate() {
+    // this has our chat scroll down to the most recent message
+    var chat = document.querySelector('#chat');
+    chat.scrollTop = chat.scrollHeight;
+  },
   addMessage: function addMessage() {
-    var text = this.state.message;
+    var text = this.state.message,
+        messageData = {
+      username: this.props.username || 'Mysterious Stranger',
+      text: text
+    };
     if (text) {
+      this.props.sendMessage(messageData);
       var state = this.state;
       state.message = '';
       this.setState(state);
-      var messageData = {
-        username: this.props.username || 'Mysterious Stranger',
-        text: text
-      };
-      this.props.sendMessage(messageData);
     }
   },
   joinRoom: function joinRoom() {
@@ -27083,13 +27132,16 @@ var Key = React.createClass({
 
   getInitialState: function getInitialState() {
     return {
-      className: this.props.className
+      className: this.props.className,
+      pressed: false
     };
   },
   keydown: function keydown(e) {
-    if (e.keyCode === this.props.myKey) {
+    if (e.keyCode === this.props.myKey && !this.state.pressed) {
+      console.log(e.keyCode);
       var state = this.state;
       state.className = state.className + ' pressed';
+      state.pressed = true;
       this.setState(state);
 
       this.props.keyboardDown(this.props.frequency);
@@ -27099,6 +27151,7 @@ var Key = React.createClass({
     if (e.keyCode === this.props.myKey) {
       var state = this.state;
       state.className = state.className.split(' ')[0];
+      state.pressed = false;
       this.setState(state);
 
       this.props.keyboardUp(this.props.frequency);

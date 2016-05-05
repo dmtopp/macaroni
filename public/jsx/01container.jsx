@@ -7,7 +7,6 @@ var React               = require('react'),
     ChatContainer       = require('./02chat.jsx'),
     LoginRegister       = require('./07login-register.jsx');
 
-
 /* 'Global' container component
 * =============================================================================
 * The all-seeing, all-knowing parent component.  Contains information about
@@ -78,6 +77,7 @@ var Container = React.createClass({
           frequency = keyboardData.frequency,
           context = self.state.context;
       self.state.oscillators[frequency].volume.gain.setTargetAtTime(0, context.currentTime, release);
+      console.log(self.state);
     })
 
     sockets.on('drumPadTrigger', function(data) {
@@ -135,7 +135,7 @@ var Container = React.createClass({
     // set gain for both oscillators
     // start gain at 0 and then ramp up over attack time
     oscVolume.gain.value = 0;
-    oscVolume.gain.setTargetAtTime(1, context.currentTime, data.attack);
+    oscVolume.gain.setTargetAtTime(0.5, context.currentTime, data.attack);
 
     osc.frequency.value  = frequency;
     osc2.frequency.value = frequency;
@@ -206,6 +206,7 @@ var Container = React.createClass({
     this.setState(state);
   },
   render: function() {
+    console.log('render');
     var main = <div className='row'><InstrumentContainer  keyboardDown={ this.keyboardDown }
                           keyboardUp={ this.keyboardUp }
                           keyParamsHandler={ this.keyParamsHandler }
@@ -223,16 +224,11 @@ var Container = React.createClass({
     return <div>
       { this.state.displayLogin ? <div>{ login }</div> : <div>{ main }</div> }
       { this.state.isAuthenticated ? <button className="logout" onClick={ this.handleLogout }>Logout</button> : null }
-
-
-
-
     </div>
   }
 })
 
 /* End container component
 * ============================================================================= */
-
 
 ReactDOM.render(<Container />, document.querySelector('#react-container'));
