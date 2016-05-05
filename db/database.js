@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 
-var connectionString = process.env.DB;
+var connectionString = process.env.MONGODB_URI || process.env.DB;
 
 console.log('Attempting to connect to the macaroni database...');
 console.log('====================================================');
