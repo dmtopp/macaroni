@@ -27,7 +27,7 @@ app.get('/', function(req, res, next) {
 
 // start the server and sockets
 // ----------------------------
-var server = app.listen(3000, function(){
+var server = app.listen(process.env.PORT || 5000, function(){
   console.log('The server is listening on port ' + server.address().port + '!');
 })
 var io = require('socket.io').listen(server)
