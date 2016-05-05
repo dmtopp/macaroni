@@ -15,14 +15,20 @@ controller.route('/login')
     };
 
     User.find({ username: userInfo.username }, function(err, user) {
-      console.log(userInfo.password);
-      var passwordIsValid = bcrypt.compareSync(userInfo.password, user[0].password);
-      if (passwordIsValid) {
-        res.json({ message: 'Thanks! You are now logged in.',
-                   username: user[0].username })
+      console.log(user);
+      if (user.length != 0) {
+        var passwordIsValid = bcrypt.compareSync(userInfo.password, user[0].password);
+        if (passwordIsValid) {
+          res.json({ message: 'Thanks! You are now logged in.',
+                     username: user[0].username })
+        } else {
+            res.json({ message: 'Incorrect pasword.  Please try again!',
+                       username: false });
+        }
+
       } else {
-          res.json({ message: 'Incorrect pasword.  Please try again!',
-                     username: false });
+        res.json({ message: 'There is no user with that username!',
+                   username: false })
       }
     })
   })

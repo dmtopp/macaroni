@@ -57,7 +57,6 @@ var LoginSignup = React.createClass({
   },
   render: function() {
     return <div>
-      { this.state.message ? <p className='login-message'>{ this.state.message }</p> : null }
       <div className='six columns login'>
         <form className="form-container">
           <h3>Login</h3>
@@ -80,6 +79,12 @@ var LoginSignup = React.createClass({
       <div className='twelve columns'>
         <div className='button u-pull-right' onClick={ this.props.changeToMain }>Back</div>
       </div>
+
+      <div className='twelve columns'>
+        { this.state.message ? <p className='login-message'>{ this.state.message }</p> : null }
+      </div>
+
+
 
 
     </div>

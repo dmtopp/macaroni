@@ -26799,6 +26799,11 @@ var Container = React.createClass({
       React.createElement(
         'div',
         { className: 'row' },
+        React.createElement(
+          'h1',
+          null,
+          'Macaroni'
+        ),
         React.createElement(AuthButtons, { isAuthenticated: this.state.isAuthenticated,
           handleLogout: this.handleLogout,
           changeToLogin: this.changeToLogin })
@@ -26942,6 +26947,7 @@ var ChatContainer = React.createClass({
       ),
       React.createElement('input', { id: 'chat-message',
         name: 'message',
+        placeholder: 'Type to chat',
         value: this.state.message,
         onChange: this.handleChange }),
       React.createElement(
@@ -26951,6 +26957,7 @@ var ChatContainer = React.createClass({
       ),
       React.createElement('input', { id: 'room-name',
         name: 'roomName',
+        placeholder: 'Enter a room name',
         value: this.state.roomName,
         onChange: this.handleChange }),
       React.createElement(
@@ -27557,11 +27564,6 @@ var LoginSignup = React.createClass({
     return React.createElement(
       'div',
       null,
-      this.state.message ? React.createElement(
-        'p',
-        { className: 'login-message' },
-        this.state.message
-      ) : null,
       React.createElement(
         'div',
         { className: 'six columns login' },
@@ -27611,6 +27613,15 @@ var LoginSignup = React.createClass({
           { className: 'button u-pull-right', onClick: this.props.changeToMain },
           'Back'
         )
+      ),
+      React.createElement(
+        'div',
+        { className: 'twelve columns' },
+        this.state.message ? React.createElement(
+          'p',
+          { className: 'login-message' },
+          this.state.message
+        ) : null
       )
     );
   }

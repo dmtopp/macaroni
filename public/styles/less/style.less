@@ -19,6 +19,11 @@ body {
   position: relative;
 }
 
+h1 {
+  display: inline-block;
+  text-shadow: 1px 1px 2px @med-grey;
+}
+
 .container {
   position: absolute;
   top: 50%;
@@ -28,6 +33,7 @@ body {
   background-color: @secondary-color;
   padding: 20px;
   border-radius: 4px;
+  box-shadow: 5px 5px 10px @med-grey;
 }
 
 div {
@@ -88,6 +94,8 @@ div {
 #chat-message, #room-name {
   border-radius: 2px;
   border: 1px solid @med-grey;
+  font-size: 12px;
+  padding: 6px;
 }
 
 .form-container {
@@ -102,11 +110,38 @@ div {
 .login-message {
   background-color: @light-grey;
   border-radius: 3px;
+  padding: 10px;
 }
 
 input[type=text], input[type=password] {
+  border: 1px solid @med-grey;
   border-radius: 2px;
   display: block;
+  background-color: @light-grey;
+
+  &:active {
+    border: 1px solid @light-grey;
+  }
+
+  &:focus {
+    border: 1px solid @light-grey;
+  }
+
+  &::-webkit-input-placeholder {
+   color: @med-grey;
+  }
+
+  &:-moz-placeholder { /* Firefox 18- */
+   color: @med-grey;
+  }
+
+  &::-moz-placeholder {  /* Firefox 19+ */
+   color: @med-grey;
+  }
+
+  &:-ms-input-placeholder {
+   color: @med-grey;
+  }
 }
 
 select {
@@ -118,6 +153,7 @@ select {
   padding: 0 4px;
   margin: 3px 5px;
   text-align: center;
+  background-color: @light-grey;
 }
 
 // -------------- slider styling --------------
@@ -154,6 +190,7 @@ input[type=range] {
   -webkit-appearance: none;
   margin: @thumb-height/2 0;
   width: @track-width;
+  margin-left: 5px;
 
   &:focus {
     outline: none;

@@ -11,6 +11,10 @@ body {
   font-family: 'Merriweather Sans', sans-serif;
   position: relative;
 }
+h1 {
+  display: inline-block;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
 .container {
   position: absolute;
   top: 50%;
@@ -20,6 +24,7 @@ body {
   background-color: rgba(254, 234, 255, 0.4);
   padding: 20px;
   border-radius: 4px;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
 }
 div {
   display: block;
@@ -66,6 +71,8 @@ div {
 #room-name {
   border-radius: 2px;
   border: 1px solid rgba(0, 0, 0, 0.5);
+  font-size: 12px;
+  padding: 6px;
 }
 .form-container {
   display: inline-block;
@@ -77,11 +84,40 @@ div {
 .login-message {
   background-color: rgba(0, 0, 0, 0.05);
   border-radius: 3px;
+  padding: 10px;
 }
 input[type=text],
 input[type=password] {
+  border: 1px solid rgba(0, 0, 0, 0.5);
   border-radius: 2px;
   display: block;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+input[type=text]:active,
+input[type=password]:active {
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+input[type=text]:focus,
+input[type=password]:focus {
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+input[type=text]::-webkit-input-placeholder,
+input[type=password]::-webkit-input-placeholder {
+  color: rgba(0, 0, 0, 0.5);
+}
+input[type=text]:-moz-placeholder,
+input[type=password]:-moz-placeholder {
+  /* Firefox 18- */
+  color: rgba(0, 0, 0, 0.5);
+}
+input[type=text]::-moz-placeholder,
+input[type=password]::-moz-placeholder {
+  /* Firefox 19+ */
+  color: rgba(0, 0, 0, 0.5);
+}
+input[type=text]:-ms-input-placeholder,
+input[type=password]:-ms-input-placeholder {
+  color: rgba(0, 0, 0, 0.5);
 }
 select {
   height: 25px;
@@ -92,11 +128,13 @@ select {
   padding: 0 4px;
   margin: 3px 5px;
   text-align: center;
+  background-color: rgba(0, 0, 0, 0.05);
 }
 input[type=range] {
   -webkit-appearance: none;
   margin: 7.5px 0;
   width: 100px;
+  margin-left: 5px;
 }
 input[type=range]:focus {
   outline: none;

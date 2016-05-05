@@ -68,12 +68,14 @@ var ChatContainer = React.createClass({
 
       <input id="chat-message"
              name="message"
+             placeholder='Type to chat'
              value={ this.state.message }
              onChange={ this.handleChange } />
       <div className='button' onClick={ this.addMessage }>Send</div>
 
       <input id="room-name"
              name="roomName"
+             placeholder='Enter a room name'
              value={ this.state.roomName }
              onChange={ this.handleChange } />
       <div className='button' onClick={ this.joinRoom }>Join Room</div>

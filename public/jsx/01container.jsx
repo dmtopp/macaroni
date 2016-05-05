@@ -211,6 +211,7 @@ var Container = React.createClass({
   render: function() {
     var main = <div>
                  <div className='row'>
+                   <h1>Macaroni</h1>
                    <AuthButtons isAuthenticated={ this.state.isAuthenticated }
                                 handleLogout={ this.handleLogout }
                                 changeToLogin={ this.changeToLogin } />
