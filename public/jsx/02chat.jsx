@@ -42,8 +42,6 @@ var ChatContainer = React.createClass({
           username: this.props.username || 'Mysterious Stranger',
           text: text
         }
-    console.log(messageData);
-    console.log(this.props.username);
     if (text) {
       this.props.sendMessage(messageData);
       var state = this.state;
@@ -61,7 +59,6 @@ var ChatContainer = React.createClass({
     this.setState(state);
   },
   render: function() {
-    // console.log(this.props.messages);
     var messages = this.props.messages.map(function(message, i) {
       return <Message messageData={ message } key={ i } />
     })
@@ -92,7 +89,6 @@ var Message = React.createClass({
     var username = this.props.messageData.username;
     var message = this.props.messageData.text;
     var className = this.props.messageData.className;
-    // console.log(this.props.messageData);
 
     return <p className={ className }><b>{ username }:  </b>{ message }</p>
   }
